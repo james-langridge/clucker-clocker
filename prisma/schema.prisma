@@ -29,22 +29,45 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model ClockedTime {
+  id      String  @id @default(cuid())
+  start   DateTime
+  end     DateTime
+  userId  String
+  groupId String?
+
+  group ClockedTimeGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ClockedTimeGroup {
+  id           String  @id @default(cuid())
+  name         String
+  userId       String
+  clockedTimes ClockedTime[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
+
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id                String    @id @default(cuid())
+  name              String?
+  email             String?   @unique
+  emailVerified     DateTime?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+  clockedTimes      ClockedTime[]
+  clockedTimeGroups ClockedTimeGroup[]
 }
 
 model VerificationToken {
