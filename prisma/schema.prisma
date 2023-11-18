@@ -30,11 +30,12 @@ model Account {
 }
 
 model ClockedTime {
-  id      String  @id @default(cuid())
-  start   DateTime
-  end     DateTime
-  userId  String
-  groupId String?
+  id       String  @id @default(cuid())
+  start    DateTime
+  end      DateTime
+  duration Int
+  userId   String
+  groupId  String?
 
   group ClockedTimeGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
   user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
