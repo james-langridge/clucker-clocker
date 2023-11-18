@@ -137,11 +137,12 @@ export const config = {
     // Zoom,
   ],
   callbacks: {
-    authorized({request, auth}) {
-      const {pathname} = request.nextUrl
-      if (pathname === '/middleware-example') return !!auth
+    session({session, user}) {
+      if (session.user) {
+        session.user.id = user.id
+      }
 
-      return true
+      return session
     },
   },
 } satisfies NextAuthConfig

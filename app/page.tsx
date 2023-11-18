@@ -1,9 +1,8 @@
-import Button from '@/app/button'
+import ClockInButton from '@/components/clock-in-button'
+import {auth} from '@/auth'
 
-export default function Home() {
-  return (
-    <div className="h-60 w-60 flex items-center justify-center">
-      <Button />
-    </div>
-  )
+export default async function Home() {
+  const session = await auth()
+
+  return <ClockInButton userId={session?.user?.id} />
 }

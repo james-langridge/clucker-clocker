@@ -13,6 +13,7 @@ export function useCount() {
     minutes: 0,
     seconds: 0,
   })
+  const [start, setStart] = useState<Date>()
   const [isClockedIn, setIsClockedIn] = useState<boolean>(false)
   const {hours, minutes, seconds} = count
 
@@ -43,8 +44,20 @@ export function useCount() {
   }, [isClockedIn])
 
   function toggleCounter() {
+    if (!isClockedIn) {
+      setStart(new Date())
+    }
+
+    if (isClockedIn) {
+      setCount({
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      })
+    }
+
     setIsClockedIn(prev => !prev)
   }
 
-  return {hours, isClockedIn, minutes, seconds, toggleCounter}
+  return {hours, isClockedIn, minutes, seconds, start, toggleCounter}
 }
