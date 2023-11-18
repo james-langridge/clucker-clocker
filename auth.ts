@@ -64,10 +64,13 @@ import Google from 'next-auth/providers/google'
 // import Zoom from "next-auth/providers/zoom"
 
 import type {NextAuthConfig} from 'next-auth'
+import {PrismaAdapter} from '@auth/prisma-adapter'
+import {db} from '@/lib/db'
 
 export const config = {
+  adapter: PrismaAdapter(db),
   theme: {
-    logo: 'https://next-auth.js.org/img/logo/logo-sm.png',
+    logo: 'https://clucker-clocker.vercel.app/logo.png',
   },
   providers: [
     // Apple,
