@@ -51,7 +51,7 @@ export function MainNav() {
               Help
             </NavigationMenuLink>
           </NavigationMenuItem>
-          <NavigationMenuItem>
+          <NavigationMenuItem className="hidden sm:block">
             <NavigationMenuLink
               href="/log"
               className={navigationMenuTriggerStyle()}
