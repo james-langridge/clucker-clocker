@@ -1,10 +1,15 @@
 'use client'
 
 import {clsx} from 'clsx'
-import {useCount} from '@/hooks/useCount'
+import {isSameDay, format} from 'date-fns'
 import {useIsClient} from 'usehooks-ts'
 
+import {useToast} from '@/components/ui/use-toast'
+import {useCount} from '@/hooks/useCount'
+import {getErrorMessage} from '@/lib/errors'
+
 export default function ClockInButton({userId}: {userId?: string}) {
+  const {toast} = useToast()
   const {hours, isClockedIn, minutes, seconds, start, toggleCounter} =
     useCount()
   const isClient = useIsClient()
@@ -17,24 +22,38 @@ export default function ClockInButton({userId}: {userId?: string}) {
     toggleCounter()
 
     if (isClockedIn && userId) {
-      const end = new Date().toISOString()
-
-      const body = JSON.stringify({start, end, userId})
+      const end = new Date()
+      const endDate = end.toISOString()
+      const body = JSON.stringify({start, end: endDate, userId})
 
       try {
-        const response = await fetch('/api/clocked-times', {
+        await fetch('/api/clocked-times', {
           method: 'POST',
           body,
         })
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-
-        const data = await response.json()
-        console.log(data)
       } catch (error) {
-        console.error('Error:', error)
+        toast({
+          title: 'Error clocking time...',
+          description: getErrorMessage(error),
+          variant: 'destructive',
+        })
+      }
+
+      if (start && end) {
+        const isDaySame = isSameDay(start, end)
+        const startTime = format(start, 'h:mm a')
+        const endTime = format(end, 'h:mm a')
+        const startDay = format(start, 'MMM d, yyyy')
+        const endDay = format(end, 'MMM d, yyyy')
+
+        const description = isDaySame
+          ? `${startDay} from ${startTime} to ${endTime}`
+          : `${startDay} at ${startTime} to ${endDay} at ${endTime}`
+
+        toast({
+          title: 'Time clocked!',
+          description,
+        })
       }
     }
   }
