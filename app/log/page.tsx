@@ -15,6 +15,9 @@ const getData = async (id?: string) => {
         where: {
           deleted: false,
         },
+        include: {
+          tags: true,
+        },
       },
       tags: {
         where: {
@@ -30,7 +33,7 @@ const getData = async (id?: string) => {
   return {user}
 }
 
-export default async function DemoPage() {
+export default async function LogPage() {
   const session = await auth()
   const {user} = await getData(session?.user?.id)
 
@@ -40,7 +43,7 @@ export default async function DemoPage() {
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={user.clockedTimes} />
+      <DataTable columns={columns} data={user.clockedTimes} tags={user.tags} />
     </div>
   )
 }

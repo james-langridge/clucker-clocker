@@ -1,5 +1,6 @@
 'use client'
 
+import {Tag} from '@prisma/client'
 import {
   ColumnDef,
   flexRender,
@@ -8,10 +9,13 @@ import {
   SortingState,
   getSortedRowModel,
   getPaginationRowModel,
+  ColumnFiltersState,
+  getFilteredRowModel,
 } from '@tanstack/react-table'
 import * as React from 'react'
 
 import {DataTablePagination} from '@/app/log/data-table-pagination'
+import {DataTableToolbar} from '@/app/log/data-table-toolbar'
 import {
   Table,
   TableBody,
@@ -24,14 +28,20 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  tags: Tag[]
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  tags,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [rowSelection, setRowSelection] = React.useState({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  )
+
   const table = useReactTable({
     data,
     columns,
@@ -40,14 +50,18 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: setRowSelection,
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
       rowSelection,
+      columnFilters,
     },
   })
 
   return (
     <div className="space-y-4">
+      <DataTableToolbar table={table} tags={tags} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

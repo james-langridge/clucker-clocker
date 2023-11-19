@@ -1,6 +1,7 @@
 'use client'
 
 import {ClockedTime} from '.prisma/client'
+import {Tag} from '@prisma/client'
 import {ColumnDef} from '@tanstack/react-table'
 import {
   differenceInHours,
@@ -11,10 +12,11 @@ import {
 import {ArrowUpDown} from 'lucide-react'
 
 import DeleteConfirmation from '@/app/log/delete-confirmation'
+import {Badge} from '@/components/ui/badge'
 import {Button} from '@/components/ui/button'
 import {Checkbox} from '@/components/ui/checkbox'
 
-export const columns: ColumnDef<ClockedTime>[] = [
+export const columns: ColumnDef<ClockedTime & {tags: Tag[]}>[] = [
   {
     id: 'select',
     header: ({table}) => (
@@ -145,6 +147,34 @@ export const columns: ColumnDef<ClockedTime>[] = [
       }
 
       return duration
+    },
+  },
+  {
+    accessorFn: row => row.tags,
+    accessorKey: 'tags',
+    header: ({column}) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Tags
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({row}) => {
+      return (
+        <div className="flex space-x-2">
+          {row.original.tags.map(tag => {
+            return (
+              <Badge key={tag.id} variant="outline">
+                {tag.name}
+              </Badge>
+            )
+          })}
+        </div>
+      )
     },
   },
   {
