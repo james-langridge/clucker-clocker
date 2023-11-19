@@ -34,10 +34,11 @@ model ClockedTime {
   start    DateTime
   end      DateTime
   userId   String
-  tags     Tag[]
+  tagId    String?
   deleted  Boolean @default(false)
 
   user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag   Tag? @relation(fields: [tagId], references: [id])
 }
 
 model Tag {

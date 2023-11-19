@@ -39,9 +39,9 @@ export function DataTableToolbar<TData>({
         {/*  }*/}
         {/*  className="h-8 w-[150px] lg:w-[250px]"*/}
         {/*/>*/}
-        {table.getColumn('tags') && (
+        {table.getColumn('tag') && (
           <DataTableFacetedFilter
-            column={table.getColumn('tags')}
+            column={table.getColumn('tag')}
             title="Tag"
             options={options}
           />

@@ -16,7 +16,7 @@ import {Badge} from '@/components/ui/badge'
 import {Button} from '@/components/ui/button'
 import {Checkbox} from '@/components/ui/checkbox'
 
-export const columns: ColumnDef<ClockedTime & {tags: Tag[]}>[] = [
+export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
   {
     id: 'select',
     header: ({table}) => (
@@ -92,7 +92,11 @@ export const columns: ColumnDef<ClockedTime & {tags: Tag[]}>[] = [
       )
     },
     cell: ({row}) => {
-      return format(row.original.end, 'EEE, MMM d, yyyy')
+      if (row.original.end) {
+        return format(row.original.end, 'EEE, MMM d, yyyy')
+      }
+
+      return null
     },
   },
   {
@@ -110,11 +114,19 @@ export const columns: ColumnDef<ClockedTime & {tags: Tag[]}>[] = [
       )
     },
     cell: ({row}) => {
-      return format(row.original.end, 'h:mm a')
+      if (row.original.end) {
+        return format(row.original.end, 'h:mm a')
+      }
+
+      return null
     },
   },
   {
     accessorFn: row => {
+      if (!row.end) {
+        return null
+      }
+
       return differenceInSeconds(new Date(row.end), new Date(row.start))
     },
     header: ({column}) => {
@@ -130,6 +142,10 @@ export const columns: ColumnDef<ClockedTime & {tags: Tag[]}>[] = [
     },
     accessorKey: 'duration',
     cell: ({row}) => {
+      if (!row.original.end) {
+        return null
+      }
+
       const startDate = new Date(row.original.start)
       const endDate = new Date(row.original.end)
       const hours = differenceInHours(endDate, startDate)
@@ -150,29 +166,27 @@ export const columns: ColumnDef<ClockedTime & {tags: Tag[]}>[] = [
     },
   },
   {
-    accessorFn: row => row.tags,
-    accessorKey: 'tags',
+    accessorFn: row => row.tag,
+    accessorKey: 'tag',
     header: ({column}) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Tags
+          Tag
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
     cell: ({row}) => {
+      if (!row.original.tag) {
+        return null
+      }
+
       return (
         <div className="flex space-x-2">
-          {row.original.tags.map(tag => {
-            return (
-              <Badge key={tag.id} variant="outline">
-                {tag.name}
-              </Badge>
-            )
-          })}
+          <Badge variant="outline">{row.original.tag.name}</Badge>
         </div>
       )
     },

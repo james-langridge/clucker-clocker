@@ -16,7 +16,7 @@ const getData = async (id?: string) => {
           deleted: false,
         },
         include: {
-          tags: true,
+          tag: true,
         },
       },
       tags: {
