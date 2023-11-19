@@ -23,21 +23,6 @@ export default function ClockInButton({userId}: {userId?: string}) {
 
     if (isClockedIn && userId) {
       const end = new Date()
-      const endDate = end.toISOString()
-      const body = JSON.stringify({start, end: endDate, userId})
-
-      try {
-        await fetch('/api/clocked-times', {
-          method: 'POST',
-          body,
-        })
-      } catch (error) {
-        toast({
-          title: 'Error clocking time...',
-          description: getErrorMessage(error),
-          variant: 'destructive',
-        })
-      }
 
       if (start && end) {
         const isDaySame = isSameDay(start, end)
@@ -53,6 +38,22 @@ export default function ClockInButton({userId}: {userId?: string}) {
         toast({
           title: 'Time clocked!',
           description,
+        })
+      }
+
+      const endDate = end.toISOString()
+      const body = JSON.stringify({start, end: endDate, userId})
+
+      try {
+        await fetch('/api/clocked-times', {
+          method: 'POST',
+          body,
+        })
+      } catch (error) {
+        toast({
+          title: 'Error clocking time...',
+          description: getErrorMessage(error),
+          variant: 'destructive',
         })
       }
     }
