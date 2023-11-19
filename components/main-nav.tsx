@@ -1,9 +1,12 @@
 'use client'
 
 import Image from 'next/image'
+import React from 'react'
 
 import {cn} from '@/lib/utils'
+
 import CustomLink from './custom-link'
+import {Button} from './ui/button'
 import {
   NavigationMenu,
   // NavigationMenuContent,
@@ -13,8 +16,6 @@ import {
   // NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from './ui/navigation-menu'
-import React from 'react'
-import {Button} from './ui/button'
 
 export function MainNav() {
   return (
@@ -48,6 +49,14 @@ export function MainNav() {
               className={navigationMenuTriggerStyle()}
             >
               Help
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              href="/log"
+              className={navigationMenuTriggerStyle()}
+            >
+              Log
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
