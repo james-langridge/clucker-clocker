@@ -2,7 +2,12 @@
 
 import {ClockedTime} from '.prisma/client'
 import {ColumnDef} from '@tanstack/react-table'
-import {format} from 'date-fns'
+import {
+  differenceInHours,
+  differenceInMinutes,
+  differenceInSeconds,
+  format,
+} from 'date-fns'
 import {ArrowUpDown} from 'lucide-react'
 
 import DeleteConfirmation from '@/app/log/delete-confirmation'
@@ -104,6 +109,42 @@ export const columns: ColumnDef<ClockedTime>[] = [
     },
     cell: ({row}) => {
       return format(row.original.end, 'h:mm a')
+    },
+  },
+  {
+    accessorFn: row => {
+      return differenceInSeconds(new Date(row.end), new Date(row.start))
+    },
+    header: ({column}) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Duration
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    accessorKey: 'duration',
+    cell: ({row}) => {
+      const startDate = new Date(row.original.start)
+      const endDate = new Date(row.original.end)
+      const hours = differenceInHours(endDate, startDate)
+      const minutes = differenceInMinutes(endDate, startDate) % 60
+      const seconds = differenceInSeconds(endDate, startDate) % 60
+
+      let duration = `${seconds} s`
+
+      if (minutes) {
+        duration = `${minutes} m ` + duration
+      }
+
+      if (hours) {
+        duration = `${hours} h ` + duration
+      }
+
+      return duration
     },
   },
   {

@@ -1,5 +1,5 @@
-import {useLocalStorage} from 'usehooks-ts'
 import {useEffect, useState} from 'react'
+import {useLocalStorage} from 'usehooks-ts'
 
 type Count = {
   hours: number
@@ -41,7 +41,7 @@ export function useCount() {
     }
 
     return () => clearInterval(intervalId)
-  }, [isClockedIn])
+  }, [isClockedIn, setCount])
 
   function toggleCounter() {
     if (!isClockedIn) {
