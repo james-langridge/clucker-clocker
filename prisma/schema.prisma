@@ -33,19 +33,19 @@ model ClockedTime {
   id       String  @id @default(cuid())
   start    DateTime
   end      DateTime
-  duration Int
   userId   String
-  groupId  String?
+  tags     Tag[]
+  deleted  Boolean @default(false)
 
-  group ClockedTimeGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
   user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model ClockedTimeGroup {
+model Tag {
   id           String  @id @default(cuid())
   name         String
   userId       String
   clockedTimes ClockedTime[]
+  deleted      Boolean @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -60,15 +60,15 @@ model Session {
 }
 
 model User {
-  id                String    @id @default(cuid())
-  name              String?
-  email             String?   @unique
-  emailVerified     DateTime?
-  image             String?
-  accounts          Account[]
-  sessions          Session[]
-  clockedTimes      ClockedTime[]
-  clockedTimeGroups ClockedTimeGroup[]
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  clockedTimes  ClockedTime[]
+  tags          Tag[]
 }
 
 model VerificationToken {

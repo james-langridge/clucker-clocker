@@ -45,10 +45,18 @@ export default function ClockInButton({userId}: {userId?: string}) {
       const body = JSON.stringify({start, end: endDate, userId})
 
       try {
-        await fetch('/api/clocked-times', {
+        const res = await fetch('/api/clocked-times', {
           method: 'POST',
           body,
         })
+
+        if (!res.ok) {
+          toast({
+            title: 'Error clocking time...',
+            description: `Something went wrong: ${res.statusText}`,
+            variant: 'destructive',
+          })
+        }
       } catch (error) {
         toast({
           title: 'Error clocking time...',

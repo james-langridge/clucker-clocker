@@ -1,25 +1,13 @@
 'use client'
 
-import {ClockedTime, ClockedTimeGroup} from '.prisma/client'
-import {DotsHorizontalIcon} from '@radix-ui/react-icons'
+import {ClockedTime} from '.prisma/client'
 import {ColumnDef} from '@tanstack/react-table'
 import {format} from 'date-fns'
 import {ArrowUpDown} from 'lucide-react'
 
+import DeleteConfirmation from '@/app/log/delete-confirmation'
 import {Button} from '@/components/ui/button'
 import {Checkbox} from '@/components/ui/checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-
-export type User = {
-  clockedTimes: ClockedTime[]
-  clockedTimeGroups: ClockedTimeGroup[]
-}
 
 export const columns: ColumnDef<ClockedTime>[] = [
   {
@@ -119,30 +107,9 @@ export const columns: ColumnDef<ClockedTime>[] = [
     },
   },
   {
-    accessorKey: 'duration',
-    header: 'Duration',
-  },
-  {
     id: 'actions',
-    cell: () => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-            >
-              <DotsHorizontalIcon className="h-4 w-4" />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[160px]">
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+    cell: ({row}) => {
+      return <DeleteConfirmation id={row.original.id} />
     },
   },
 ]

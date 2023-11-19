@@ -1,7 +1,7 @@
 import {auth} from '@/auth'
 import {db} from '@/lib/db'
 
-import {columns, User} from './columns'
+import {columns} from './columns'
 import {DataTable} from './data-table'
 
 const getData = async (id?: string) => {
@@ -9,10 +9,18 @@ const getData = async (id?: string) => {
     return {user: undefined}
   }
 
-  const user: User | null = await db.user.findUnique({
+  const user = await db.user.findUnique({
     select: {
-      clockedTimes: true,
-      clockedTimeGroups: true,
+      clockedTimes: {
+        where: {
+          deleted: false,
+        },
+      },
+      tags: {
+        where: {
+          deleted: false,
+        },
+      },
     },
     where: {
       id: id,
