@@ -32,7 +32,7 @@ model Account {
 model ClockedTime {
   id       String  @id @default(cuid())
   start    DateTime
-  end      DateTime
+  end      DateTime?
   userId   String
   tagId    String?
   deleted  Boolean @default(false)

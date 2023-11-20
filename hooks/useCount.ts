@@ -1,5 +1,12 @@
+import {useQuery} from '@tanstack/react-query'
+import {
+  differenceInHours,
+  differenceInMinutes,
+  differenceInSeconds,
+} from 'date-fns'
 import {useEffect, useState} from 'react'
-import {useLocalStorage} from 'usehooks-ts'
+
+import {getUser} from '@/lib/api'
 
 type Count = {
   hours: number
@@ -7,47 +14,57 @@ type Count = {
   seconds: number
 }
 
-export function useCount() {
-  const [count, setCount] = useLocalStorage<Count>('count', {
+export function useCount(userId?: string) {
+  const {data} = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => getUser(userId),
+    refetchInterval: 2500,
+  })
+  const [start, setStart] = useState<Date>()
+  const activeId = data?.clockedTimes[0]?.id
+  const [count, setCount] = useState<Count>({
     hours: 0,
     minutes: 0,
     seconds: 0,
   })
-  const [start, setStart] = useState<Date>()
   const [isClockedIn, setIsClockedIn] = useState<boolean>(false)
   const {hours, minutes, seconds} = count
 
   useEffect(() => {
+    if (data?.clockedTimes.length) {
+      setStart(new Date(data.clockedTimes[0].start))
+      setIsClockedIn(true)
+    } else if (!data?.clockedTimes.length) {
+      setIsClockedIn(false)
+      setCount({
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      })
+    }
+  }, [data])
+
+  useEffect(() => {
     let intervalId: NodeJS.Timeout
 
-    if (isClockedIn) {
+    if (isClockedIn && start) {
       intervalId = setInterval(() => {
-        setCount(prev => {
-          const {hours, minutes, seconds} = prev
+        setCount(() => {
+          const endDate = new Date()
 
-          if (seconds === 60) {
-            if (minutes < 60) {
-              return {...prev, minutes: minutes + 1, seconds: 0}
-            }
+          const hours = differenceInHours(endDate, start)
+          const minutes = differenceInMinutes(endDate, start) % 60
+          const seconds = differenceInSeconds(endDate, start) % 60
 
-            if (minutes === 60) {
-              return {hours: hours + 1, minutes: 0, seconds: 0}
-            }
-          }
-
-          return {...prev, seconds: seconds + 1}
+          return {hours, minutes, seconds}
         })
       }, 1000)
     }
 
     return () => clearInterval(intervalId)
-  }, [isClockedIn, setCount])
+  }, [isClockedIn, setCount, start])
 
   function toggleCounter() {
-    if (!isClockedIn) {
-      setStart(new Date())
-    }
-
     if (isClockedIn) {
       setCount({
         hours: 0,
@@ -59,5 +76,13 @@ export function useCount() {
     setIsClockedIn(prev => !prev)
   }
 
-  return {hours, isClockedIn, minutes, seconds, start, toggleCounter}
+  return {
+    activeId,
+    hours,
+    isClockedIn,
+    minutes,
+    seconds,
+    start,
+    toggleCounter,
+  }
 }

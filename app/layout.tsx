@@ -1,11 +1,12 @@
 import type {Metadata} from 'next'
 import {Inter} from 'next/font/google'
 
+import Footer from '@/components/footer'
+import Header from '@/components/header'
 import {Toaster} from '@/components/ui/toaster'
 
 import './globals.css'
-import Footer from '@/components/footer'
-import Header from '@/components/header'
+import Providers from '@/app/Providers'
 
 const inter = Inter({subsets: ['latin']})
 
@@ -21,7 +22,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <div className="flex flex-col justify-between w-full h-full min-h-screen">
           <Header />
           <main className="flex items-center justify-center flex-auto w-full h-full px-4 py-4 mx-auto sm:px-6 md:py-6 relative">
-            {children}
+            <Providers>{children}</Providers>
           </main>
           <Toaster />
           <Footer />

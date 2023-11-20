@@ -1,30 +1,45 @@
 'use client'
 
+import {useMutation, useQueryClient} from '@tanstack/react-query'
 import {clsx} from 'clsx'
-import {isSameDay, format} from 'date-fns'
+import {format, isSameDay} from 'date-fns'
 import {useIsClient} from 'usehooks-ts'
 
 import {useToast} from '@/components/ui/use-toast'
 import {useCount} from '@/hooks/useCount'
+import {clockIn, clockOut} from '@/lib/api'
 import {getErrorMessage} from '@/lib/errors'
 
 export default function ClockInButton({userId}: {userId?: string}) {
   const {toast} = useToast()
-  const {hours, isClockedIn, minutes, seconds, start, toggleCounter} =
-    useCount()
+  const {activeId, hours, isClockedIn, minutes, seconds, start, toggleCounter} =
+    useCount(userId)
   const isClient = useIsClient()
+  const queryClient = useQueryClient()
+  const {mutate: clockInMutate} = useMutation({
+    mutationFn: clockIn,
+    onMutate: () => {
+      toast({
+        description: 'Clocked in!',
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['user', userId]})
+    },
+    onError: error => {
+      toast({
+        title: 'Error clocking in...',
+        description: getErrorMessage(error),
+        variant: 'destructive',
+      })
+    },
+  })
+  const {mutate: clockOutMutate} = useMutation({
+    mutationFn: clockOut,
+    onMutate: variables => {
+      const end = variables.end
 
-  if (!isClient) {
-    return null
-  }
-
-  const onClick = async () => {
-    toggleCounter()
-
-    if (isClockedIn && userId) {
-      const end = new Date()
-
-      if (start && end) {
+      if (start) {
         const isDaySame = isSameDay(start, end)
         const startTime = format(start, 'h:mm a')
         const endTime = format(end, 'h:mm a')
@@ -36,34 +51,40 @@ export default function ClockInButton({userId}: {userId?: string}) {
           : `${startDay} at ${startTime} to ${endDay} at ${endTime}`
 
         toast({
-          title: 'Time clocked!',
+          title: 'Clocked out!',
           description,
         })
-      }
-
-      const endDate = end.toISOString()
-      const body = JSON.stringify({start, end: endDate, userId})
-
-      try {
-        const res = await fetch('/api/clocked-times', {
-          method: 'POST',
-          body,
-        })
-
-        if (!res.ok) {
-          toast({
-            title: 'Error clocking time...',
-            description: `Something went wrong: ${res.statusText}`,
-            variant: 'destructive',
-          })
-        }
-      } catch (error) {
+      } else {
         toast({
-          title: 'Error clocking time...',
-          description: getErrorMessage(error),
-          variant: 'destructive',
+          description: 'Clocked out!',
         })
       }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['user', userId]})
+    },
+    onError: error => {
+      toast({
+        title: 'Error clocking out...',
+        description: getErrorMessage(error),
+        variant: 'destructive',
+      })
+    },
+  })
+
+  if (!isClient) {
+    return null
+  }
+
+  const onClick = async () => {
+    toggleCounter()
+
+    if (!isClockedIn && userId) {
+      clockInMutate({start: new Date(), userId})
+    }
+
+    if (isClockedIn && activeId) {
+      clockOutMutate({end: new Date(), id: activeId})
     }
   }
 

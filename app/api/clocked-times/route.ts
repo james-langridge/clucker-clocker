@@ -16,15 +16,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({message: 'You must be logged in.'}, {status: 401})
   }
 
-  const {start, end, userId}: Body = await req.json()
-
-  const startDate = new Date(start)
-  const endDate = new Date(end)
+  const {start, userId}: Body = await req.json()
 
   const clockedTime = await db.clockedTime.create({
     data: {
-      start: startDate,
-      end: endDate,
+      start: new Date(start),
       userId,
     },
   })
