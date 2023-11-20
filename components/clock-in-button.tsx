@@ -5,6 +5,7 @@ import {clsx} from 'clsx'
 import {format, isSameDay} from 'date-fns'
 import {useIsClient} from 'usehooks-ts'
 
+import SignInDialog from '@/components/sign-in-dialog'
 import {useToast} from '@/components/ui/use-toast'
 import {useCount} from '@/hooks/useCount'
 import {clockIn, clockOut} from '@/lib/api'
@@ -86,6 +87,16 @@ export default function ClockInButton({userId}: {userId?: string}) {
     if (isClockedIn && activeId) {
       clockOutMutate({end: new Date(), id: activeId})
     }
+  }
+
+  if (!userId) {
+    return (
+      <div className="flex flex-col justify-between items-center h-full w-full">
+        <div className="grow flex flex-col justify-center items-center h-full w-full">
+          <SignInDialog />
+        </div>
+      </div>
+    )
   }
 
   return (
