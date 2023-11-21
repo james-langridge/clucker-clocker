@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import React from 'react'
 
+import {TagMenuGroup} from '@/components/tag-menu-group'
 import {cn} from '@/lib/utils'
 
 import CustomLink from './custom-link'
@@ -17,7 +18,7 @@ import {
   navigationMenuTriggerStyle,
 } from './ui/navigation-menu'
 
-export function MainNav() {
+export function MainNav({userId}: {userId?: string}) {
   return (
     <div className="flex items-center space-x-2 lg:space-x-6">
       <CustomLink href="/">
@@ -59,6 +60,7 @@ export function MainNav() {
               Log
             </NavigationMenuLink>
           </NavigationMenuItem>
+          <TagMenuGroup userId={userId} />
         </NavigationMenuList>
       </NavigationMenu>
     </div>

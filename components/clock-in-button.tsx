@@ -8,7 +8,7 @@ import {useIsClient} from 'usehooks-ts'
 import SignInDialog from '@/components/sign-in-dialog'
 import {useToast} from '@/components/ui/use-toast'
 import {useCount} from '@/hooks/useCount'
-import {clockIn, clockOut} from '@/lib/api'
+import {clockIn, updateClockedTime} from '@/lib/api'
 import {getErrorMessage} from '@/lib/errors'
 
 export default function ClockInButton({userId}: {userId?: string}) {
@@ -36,11 +36,11 @@ export default function ClockInButton({userId}: {userId?: string}) {
     },
   })
   const {mutate: clockOutMutate} = useMutation({
-    mutationFn: clockOut,
+    mutationFn: updateClockedTime,
     onMutate: variables => {
       const end = variables.end
 
-      if (start) {
+      if (start && end) {
         const isDaySame = isSameDay(start, end)
         const startTime = format(start, 'h:mm a')
         const endTime = format(end, 'h:mm a')

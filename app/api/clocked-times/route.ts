@@ -41,15 +41,17 @@ export async function PUT(req: NextRequest) {
   }
 
   const {
-    id,
-    deleted,
     start,
     end,
+    id,
+    tagId,
+    deleted,
   }: {
+    start?: Date
+    end?: Date
     id: string
+    tagId?: string
     deleted?: boolean
-    start?: string
-    end?: string
   } = await req.json()
 
   const clockedTime = await db.clockedTime.update({
@@ -60,6 +62,7 @@ export async function PUT(req: NextRequest) {
       ...(deleted !== undefined && {deleted}),
       ...(start !== undefined && {start: new Date(start)}),
       ...(end !== undefined && {end: new Date(end)}),
+      ...(tagId !== undefined && {tagId}),
     },
   })
 
