@@ -166,7 +166,7 @@ export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
     },
   },
   {
-    accessorFn: row => row.tag,
+    accessorFn: row => row.tag?.name,
     accessorKey: 'tag',
     header: ({column}) => {
       return (
