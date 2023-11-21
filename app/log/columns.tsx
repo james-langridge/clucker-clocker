@@ -42,6 +42,7 @@ export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
     enableHiding: false,
   },
   {
+    id: 'startDay',
     accessorFn: row => row.start,
     accessorKey: 'startDay',
     header: ({column}) => {
