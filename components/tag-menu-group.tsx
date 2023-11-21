@@ -30,7 +30,6 @@ import {createTag, getTags, getUser, updateClockedTime} from '@/lib/api'
 import {getErrorMessage} from '@/lib/errors'
 
 export function TagMenuGroup({userId}: {userId?: string}) {
-  // const queryClient = useQueryClient()
   const {toast} = useToast()
   const {data: tags} = useQuery({
     queryKey: ['tags', userId],
@@ -54,10 +53,6 @@ export function TagMenuGroup({userId}: {userId?: string}) {
         })
       }
     },
-    // No invalidation needed here?
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries({queryKey: ['user', userId]})
-    // },
     onError: error => {
       toast({
         title: 'Error tagging...',
