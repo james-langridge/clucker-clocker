@@ -1,4 +1,3 @@
-import {useQuery} from '@tanstack/react-query'
 import {
   differenceInHours,
   differenceInMinutes,
@@ -6,7 +5,7 @@ import {
 } from 'date-fns'
 import {useEffect, useState} from 'react'
 
-import {getUser} from '@/lib/api'
+import {useClockedTime} from '@/hooks/useClockedTime'
 
 type Count = {
   hours: number
@@ -15,13 +14,8 @@ type Count = {
 }
 
 export function useCount(userId?: string) {
-  const {data} = useQuery({
-    queryKey: ['user', userId],
-    queryFn: () => getUser(userId),
-    refetchInterval: 2500,
-  })
   const [start, setStart] = useState<Date>()
-  const lastClockedTime = data?.clockedTimes[0]
+  const {lastClockedTime} = useClockedTime({userId, start})
   const [count, setCount] = useState<Count>({
     hours: 0,
     minutes: 0,
@@ -31,10 +25,14 @@ export function useCount(userId?: string) {
   const {hours, minutes, seconds} = count
 
   useEffect(() => {
-    if (data && !data.clockedTimes[0].end) {
-      setStart(new Date(data.clockedTimes[0].start))
+    if (!lastClockedTime) {
+      return
+    }
+
+    if (!lastClockedTime.end) {
+      setStart(new Date(lastClockedTime.start))
       setIsClockedIn(true)
-    } else if (data && data.clockedTimes[0].end) {
+    } else if (lastClockedTime.end) {
       setIsClockedIn(false)
       setCount({
         hours: 0,
@@ -42,7 +40,7 @@ export function useCount(userId?: string) {
         seconds: 0,
       })
     }
-  }, [data])
+  }, [lastClockedTime])
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout

@@ -49,13 +49,11 @@ export default function TagDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>{children}</DialogTrigger>
-
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add a tag?</DialogTitle>
         </DialogHeader>
-
         <RadioGroup defaultValue="card" className="grid grid-cols-3 gap-4">
           {tags &&
             tags.map(tag => (
@@ -66,7 +64,6 @@ export default function TagDialog({
                   className="peer sr-only"
                   onClick={() => setTag(tag)}
                 />
-
                 <Label
                   htmlFor={tag.name}
                   className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"

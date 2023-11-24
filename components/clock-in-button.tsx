@@ -12,7 +12,7 @@ interface TheClockInButtonProps {
 export const ClockInButton = React.forwardRef<
   HTMLDivElement,
   TheClockInButtonProps
->(({userId}, ref) => {
+>(({userId, ...otherProps}, ref) => {
   const {lastClockedTime, isClockedIn, toggleCounter} = useCount(userId)
   const {clockInMutate, clockOutMutate} = useClockedTime({userId})
 
@@ -31,6 +31,7 @@ export const ClockInButton = React.forwardRef<
   return (
     <div
       ref={ref}
+      {...otherProps}
       className="flex flex-col justify-between items-center h-full w-full"
     >
       <div className="grow flex flex-col justify-center items-center h-full w-full">

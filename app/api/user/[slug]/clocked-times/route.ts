@@ -19,14 +19,20 @@ export async function GET(
 
     const id = params.slug
 
-    const tags = await db.tag.findMany({
+    const clockedTime = await db.clockedTime.findFirst({
       where: {
         userId: id,
         deleted: false,
       },
+      include: {
+        tag: true,
+      },
+      orderBy: {
+        start: 'desc',
+      },
     })
 
-    return NextResponse.json({data: tags}, {status: 200})
+    return NextResponse.json({data: clockedTime}, {status: 200})
   } catch (e) {
     console.error(e)
     return NextResponse.json({error: 'Internal Server Error'}, {status: 500})

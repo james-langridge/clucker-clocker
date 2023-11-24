@@ -1,23 +1,21 @@
 import {ClockedTime} from '.prisma/client'
-import {Tag, User} from '@prisma/client'
+import {Tag} from '@prisma/client'
 
-// Returns the user and the most recent clockedTime
-export async function getUser(
-  id?: string,
-): Promise<User & {clockedTimes: ClockedTime[]}> {
+// Returns the user's most recent clockedTime
+export async function getLastClockedTime(id?: string): Promise<ClockedTime> {
   if (typeof id === 'undefined') {
     return Promise.reject(new Error('Invalid id'))
   }
 
-  const res = await fetch(`/api/user/${id}`)
+  const res = await fetch(`/api/user/${id}/clocked-times`)
 
-  const data = await res.json()
+  const jsonRes = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.error)
+    throw new Error(jsonRes.error || 'An error occurred')
   }
 
-  return data
+  return jsonRes.data
 }
 
 export async function clockIn({
@@ -44,13 +42,13 @@ export async function clockIn({
     body: JSON.stringify(body),
   })
 
-  const {data} = await res.json()
+  const jsonRes = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.error)
+    throw new Error(jsonRes.error || 'An error occurred')
   }
 
-  return data
+  return jsonRes.data
 }
 
 export async function updateClockedTime({
@@ -65,7 +63,7 @@ export async function updateClockedTime({
   id: string
   tagId?: string
   deleted?: boolean
-}) {
+}): Promise<ClockedTime> {
   if (typeof id === 'undefined') {
     return Promise.reject(new Error('Invalid id'))
   }
@@ -99,13 +97,13 @@ export async function updateClockedTime({
     body: JSON.stringify(body),
   })
 
-  const {data} = await res.json()
+  const jsonRes = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.error)
+    throw new Error(jsonRes.error || 'An error occurred')
   }
 
-  return data
+  return jsonRes.data
 }
 
 export async function createTag({
@@ -114,19 +112,19 @@ export async function createTag({
 }: {
   name: string
   userId: string
-}) {
+}): Promise<Tag> {
   const res = await fetch('/api/tags', {
     method: 'POST',
     body: JSON.stringify({name, userId}),
   })
 
-  const {data} = await res.json()
+  const jsonRes = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.error)
+    throw new Error(jsonRes.error || 'An error occurred')
   }
 
-  return data
+  return jsonRes.data
 }
 
 export async function getTags(id?: string): Promise<Tag[]> {
@@ -136,11 +134,11 @@ export async function getTags(id?: string): Promise<Tag[]> {
 
   const res = await fetch(`/api/user/${id}/tags`)
 
-  const data = await res.json()
+  const jsonRes = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.error)
+    throw new Error(jsonRes.error || 'An error occurred')
   }
 
-  return data
+  return jsonRes.data
 }

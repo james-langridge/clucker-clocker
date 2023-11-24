@@ -47,7 +47,7 @@ export default function DeleteConfirmation({id}: {id: string}) {
       router.refresh()
     } catch (error) {
       toast({
-        title: 'Error clocking time...',
+        title: 'Error deleting time...',
         description: getErrorMessage(error),
         variant: 'destructive',
       })
