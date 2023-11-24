@@ -6,13 +6,7 @@ import {useTag} from '@/hooks/useTag'
 import {clockIn, getLastClockedTime, updateClockedTime} from '@/lib/api'
 import {getErrorMessage} from '@/lib/errors'
 
-export function useClockedTime({
-  userId,
-  start,
-}: {
-  userId?: string
-  start?: Date
-}) {
+export function useClockedTime({userId}: {userId?: string}) {
   const {tags} = useTag({userId})
   const {toast} = useToast()
   const queryClient = useQueryClient()
@@ -20,7 +14,7 @@ export function useClockedTime({
   const {data: lastClockedTime} = useQuery({
     queryKey: ['lastClockedTime', userId],
     queryFn: () => getLastClockedTime(userId),
-    refetchInterval: 1000,
+    // refetchInterval: 1000,
   })
 
   const {mutate: clockInMutate} = useMutation({
@@ -57,6 +51,7 @@ export function useClockedTime({
   const {mutate: clockOutMutate} = useMutation({
     mutationFn: updateClockedTime,
     onMutate: async updatedClockedTime => {
+      const start = lastClockedTime && new Date(lastClockedTime?.start)
       const end = updatedClockedTime.end
 
       if (start && end) {

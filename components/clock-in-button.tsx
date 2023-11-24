@@ -3,7 +3,6 @@ import {clsx} from 'clsx'
 import * as React from 'react'
 
 import {useClockedTime} from '@/hooks/useClockedTime'
-import {useCount} from '@/hooks/useCount'
 
 interface TheClockInButtonProps {
   userId: string
@@ -13,12 +12,11 @@ export const ClockInButton = React.forwardRef<
   HTMLDivElement,
   TheClockInButtonProps
 >(({userId, ...otherProps}, ref) => {
-  const {lastClockedTime, isClockedIn, toggleCounter} = useCount(userId)
+  const {lastClockedTime} = useClockedTime({userId})
   const {clockInMutate, clockOutMutate} = useClockedTime({userId})
+  const isClockedIn = lastClockedTime && !lastClockedTime.end
 
   const onClockInOut = async () => {
-    toggleCounter()
-
     if (!isClockedIn && userId) {
       clockInMutate({start: new Date(), userId})
     }

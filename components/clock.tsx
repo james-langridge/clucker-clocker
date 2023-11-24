@@ -6,10 +6,11 @@ import {useIsClient} from 'usehooks-ts'
 import ClockInButton from '@/components/clock-in-button'
 import SignInDialog from '@/components/sign-in-dialog'
 import TagDialog from '@/components/tag-dialog'
-import {useCount} from '@/hooks/useCount'
+import {useClockedTime} from '@/hooks/useClockedTime'
 
 export default function Clock({userId}: {userId?: string}) {
-  const {lastClockedTime, isClockedIn} = useCount(userId)
+  const {lastClockedTime} = useClockedTime({userId})
+  const isClockedIn = lastClockedTime && !lastClockedTime.end
   const isClient = useIsClient()
 
   if (!isClient) {

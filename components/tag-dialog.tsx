@@ -15,7 +15,6 @@ import {Input} from '@/components/ui/input'
 import {Label} from '@/components/ui/label'
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group'
 import {useClockedTime} from '@/hooks/useClockedTime'
-import {useCount} from '@/hooks/useCount'
 import {useTag} from '@/hooks/useTag'
 
 export default function TagDialog({
@@ -25,7 +24,7 @@ export default function TagDialog({
   userId?: string
   children: React.ReactNode
 }) {
-  const {lastClockedTime} = useCount(userId)
+  const {lastClockedTime} = useClockedTime({userId})
   const [open, setOpen] = useState(false)
   const [tag, setTag] = React.useState<Tag | null>(null)
   const [tagName, setTagName] = useState('')
