@@ -11,26 +11,32 @@ export function useTag({userId}: {userId?: string}) {
 
   const {mutate: createTagMutation} = useMutation({
     mutationFn: createTag,
-    onMutate: () => {
+    onMutate: async newTag => {
       toast({
         description: 'Tag created!',
       })
-    },
-    onSuccess: newTag => {
-      queryClient.setQueryData<Tag[]>(['tags', userId], prev => {
-        if (!Array.isArray(prev)) {
+      await queryClient.cancelQueries({queryKey: ['tags', userId]})
+      const previousTags = queryClient.getQueryData<Tag[]>(['tags', userId])
+      queryClient.setQueryData(['tags', userId], old => {
+        if (!Array.isArray(old)) {
           throw new Error('Expected an array of tags')
         }
 
-        return [...prev, newTag]
+        return [...old, {...newTag, id: -1}]
       })
+
+      return {previousTags}
     },
-    onError: error => {
+    onError: (err, newTodo, context) => {
       toast({
         title: 'Error creating tag...',
-        description: getErrorMessage(error),
+        description: getErrorMessage(err),
         variant: 'destructive',
       })
+      queryClient.setQueryData(['tags', userId], context?.previousTags)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey: ['tags', userId]})
     },
   })
 
