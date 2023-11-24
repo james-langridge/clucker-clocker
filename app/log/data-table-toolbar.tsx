@@ -1,7 +1,7 @@
 'use client'
 
 import {Tag} from '@prisma/client'
-import {Cross2Icon} from '@radix-ui/react-icons'
+import {Cross2Icon, PlusCircledIcon} from '@radix-ui/react-icons'
 import {Table} from '@tanstack/react-table'
 
 import {DataTableViewOptions} from '@/app/log/data-table-view-options'
@@ -30,15 +30,6 @@ export function DataTableToolbar<TData>({
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        {/*TODO*/}
-        {/*<Input*/}
-        {/*  placeholder="Filter times..."*/}
-        {/*  value={(table.getColumn('description')?.getFilterValue() as string) ?? ''}*/}
-        {/*  onChange={event =>*/}
-        {/*    table.getColumn('description')?.setFilterValue(event.target.value)*/}
-        {/*  }*/}
-        {/*  className="h-8 w-[150px] lg:w-[250px]"*/}
-        {/*/>*/}
         {table.getColumn('tag') && (
           <DataTableFacetedFilter
             column={table.getColumn('tag')}
@@ -56,6 +47,12 @@ export function DataTableToolbar<TData>({
             <Cross2Icon className="ml-2 h-4 w-4" />
           </Button>
         )}
+      </div>
+      <div className="ml-auto mr-4">
+        <Button variant="outline">
+          <PlusCircledIcon className="mr-2 h-4 w-4" />
+          Add time
+        </Button>
       </div>
       <DataTableViewOptions table={table} />
     </div>

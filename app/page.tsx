@@ -1,8 +1,8 @@
 import {auth} from '@/auth'
-import ClockInButton from '@/components/clock-in-button'
+import Clock from '@/components/clock'
 
 export default async function Home() {
   const session = await auth()
 
-  return <ClockInButton userId={session?.user?.id} />
+  return <Clock userId={session?.user?.id} />
 }

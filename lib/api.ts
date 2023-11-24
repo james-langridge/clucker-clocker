@@ -1,6 +1,7 @@
 import {ClockedTime} from '.prisma/client'
 import {Tag, User} from '@prisma/client'
 
+// Returns the user and the most recent clockedTime
 export async function getUser(
   id?: string,
 ): Promise<User & {clockedTimes: ClockedTime[]}> {

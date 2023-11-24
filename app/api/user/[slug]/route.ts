@@ -22,7 +22,6 @@ export async function GET(
     include: {
       clockedTimes: {
         where: {
-          end: null,
           deleted: false,
         },
         include: {

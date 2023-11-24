@@ -21,7 +21,7 @@ export function useCount(userId?: string) {
     refetchInterval: 2500,
   })
   const [start, setStart] = useState<Date>()
-  const activeId = data?.clockedTimes[0]?.id
+  const lastClockedTime = data?.clockedTimes[0]
   const [count, setCount] = useState<Count>({
     hours: 0,
     minutes: 0,
@@ -31,10 +31,10 @@ export function useCount(userId?: string) {
   const {hours, minutes, seconds} = count
 
   useEffect(() => {
-    if (data?.clockedTimes.length) {
+    if (data && !data.clockedTimes[0].end) {
       setStart(new Date(data.clockedTimes[0].start))
       setIsClockedIn(true)
-    } else if (!data?.clockedTimes.length) {
+    } else if (data && data.clockedTimes[0].end) {
       setIsClockedIn(false)
       setCount({
         hours: 0,
@@ -77,7 +77,7 @@ export function useCount(userId?: string) {
   }
 
   return {
-    activeId,
+    lastClockedTime,
     hours,
     isClockedIn,
     minutes,
