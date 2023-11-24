@@ -29,21 +29,15 @@ export const ClockInButton = React.forwardRef<
   }
 
   return (
-    <div
-      ref={ref}
-      {...otherProps}
-      className="flex flex-col justify-between items-center h-full w-full"
-    >
-      <div className="grow flex flex-col justify-center items-center h-full w-full">
-        <button onClick={() => onClockInOut()}>
-          <ClockIcon
-            className={clsx(
-              isClockedIn ? 'animate-pulse text-blue-600' : 'text-green-600',
-              'h-72 w-72 ',
-            )}
-          />
-        </button>
-      </div>
+    <div ref={ref} {...otherProps}>
+      <button onClick={() => onClockInOut()}>
+        <ClockIcon
+          className={clsx(
+            isClockedIn ? 'animate-pulse text-blue-600' : 'text-green-600',
+            'h-72 w-72 ',
+          )}
+        />
+      </button>
     </div>
   )
 })
