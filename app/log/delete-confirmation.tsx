@@ -20,6 +20,7 @@ export default function DeleteConfirmation({id}: {id: string}) {
   const router = useRouter()
   const {toast} = useToast()
 
+  // TODO: https://nextjs.org/docs/app/building-your-application/data-fetching/forms-and-mutations#optimistic-updates
   async function onClick() {
     toast({
       description: 'Time deleted!',

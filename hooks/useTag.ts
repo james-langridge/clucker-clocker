@@ -27,7 +27,7 @@ export function useTag({userId}: {userId?: string}) {
 
       return {previousTags}
     },
-    onError: (err, newTodo, context) => {
+    onError: (err, _, context) => {
       toast({
         title: 'Error creating tag...',
         description: getErrorMessage(err),

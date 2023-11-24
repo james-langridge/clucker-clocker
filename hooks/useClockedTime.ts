@@ -25,27 +25,39 @@ export function useClockedTime({
 
   const {mutate: clockInMutate} = useMutation({
     mutationFn: clockIn,
-    onMutate: () => {
+    onMutate: async newClockedTime => {
       toast({
         description: 'Clocked in!',
       })
-    },
-    onSuccess: newClockedTime => {
+      await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
+      const previousLastClockedTime = queryClient.getQueryData([
+        'lastClockedTime',
+        userId,
+      ])
       queryClient.setQueryData(['lastClockedTime', userId], newClockedTime)
+
+      return {previousLastClockedTime}
     },
-    onError: error => {
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
+    },
+    onError: (err, _, context) => {
       toast({
         title: 'Error clocking in...',
-        description: getErrorMessage(error),
+        description: getErrorMessage(err),
         variant: 'destructive',
       })
+      queryClient.setQueryData(
+        ['lastClockedTime', userId],
+        context?.previousLastClockedTime,
+      )
     },
   })
 
   const {mutate: clockOutMutate} = useMutation({
     mutationFn: updateClockedTime,
-    onMutate: variables => {
-      const end = variables.end
+    onMutate: async updatedClockedTime => {
+      const end = updatedClockedTime.end
 
       if (start && end) {
         const isDaySame = isSameDay(start, end)
@@ -67,66 +79,71 @@ export function useClockedTime({
           description: 'Clocked out!',
         })
       }
+
+      await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
+      const previousLastClockedTime = queryClient.getQueryData([
+        'lastClockedTime',
+        userId,
+      ])
+      queryClient.setQueryData(['lastClockedTime', userId], updatedClockedTime)
+
+      return {previousLastClockedTime}
     },
-    onSuccess: newClockedTime => {
-      queryClient.setQueryData(['lastClockedTime', userId], newClockedTime)
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
     },
-    onError: error => {
+    onError: (err, _, context) => {
       toast({
         title: 'Error clocking out...',
-        description: getErrorMessage(error),
+        description: getErrorMessage(err),
         variant: 'destructive',
       })
+      queryClient.setQueryData(
+        ['lastClockedTime', userId],
+        context?.previousLastClockedTime,
+      )
     },
   })
 
   const {mutate: mutateClockedTime} = useMutation({
     mutationFn: updateClockedTime,
-    onMutate: variables => {
-      const tag = tags?.find(tag => tag.id === variables.tagId)
+    onMutate: async updatedClockedTime => {
+      const tag = tags?.find(tag => tag.id === updatedClockedTime.tagId)
 
       if (tag) {
         toast({
           description: `Tagged with ${tag.name}!`,
         })
       }
+
+      await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
+      const previousLastClockedTime = queryClient.getQueryData([
+        'lastClockedTime',
+        userId,
+      ])
+      queryClient.setQueryData(['lastClockedTime', userId], updatedClockedTime)
+
+      return {previousLastClockedTime}
     },
-    onSuccess: newClockedTime => {
-      queryClient.setQueryData(['lastClockedTime', userId], newClockedTime)
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
     },
-    onError: error => {
+    onError: (err, _, context) => {
       toast({
         title: 'Error tagging...',
-        description: getErrorMessage(error),
+        description: getErrorMessage(err),
         variant: 'destructive',
       })
-    },
-  })
-
-  const {mutate: deleteClockedTime} = useMutation({
-    mutationFn: updateClockedTime,
-    onMutate: () =>
-      toast({
-        description: `Time deleted!`,
-      }),
-    onSuccess: deletedTime => {
-      if (deletedTime.id === lastClockedTime?.id) {
-        queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
-      }
-    },
-    onError: error => {
-      toast({
-        title: 'Error deleting time...',
-        description: getErrorMessage(error),
-        variant: 'destructive',
-      })
+      queryClient.setQueryData(
+        ['lastClockedTime', userId],
+        context?.previousLastClockedTime,
+      )
     },
   })
 
   return {
     clockInMutate,
     clockOutMutate,
-    deleteClockedTime,
     lastClockedTime,
     mutateClockedTime,
   }
