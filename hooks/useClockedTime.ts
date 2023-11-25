@@ -1,10 +1,14 @@
 import {useMutation, useQueryClient, useQuery} from '@tanstack/react-query'
-import {format, isSameDay} from 'date-fns'
 
 import {useToast} from '@/components/ui/use-toast'
 import {useTag} from '@/hooks/useTag'
-import {clockIn, getLastClockedTime, updateClockedTime} from '@/lib/api'
+import {
+  createClockedTime,
+  getLastClockedTime,
+  updateClockedTime,
+} from '@/lib/api'
 import {getErrorMessage} from '@/lib/errors'
+import {clockOutDescription} from '@/lib/utils'
 
 export function useClockedTime({userId}: {userId?: string}) {
   const {tags} = useTag({userId})
@@ -18,7 +22,7 @@ export function useClockedTime({userId}: {userId?: string}) {
   })
 
   const {mutate: clockInMutate} = useMutation({
-    mutationFn: clockIn,
+    mutationFn: createClockedTime,
     onMutate: async newClockedTime => {
       toast({
         description: 'Clocked in!',
@@ -55,19 +59,9 @@ export function useClockedTime({userId}: {userId?: string}) {
       const end = updatedClockedTime.end
 
       if (start && end) {
-        const isDaySame = isSameDay(start, end)
-        const startTime = format(start, 'h:mm a')
-        const endTime = format(end, 'h:mm a')
-        const startDay = format(start, 'MMM d, yyyy')
-        const endDay = format(end, 'MMM d, yyyy')
-
-        const description = isDaySame
-          ? `${startDay} from ${startTime} to ${endTime}`
-          : `${startDay} at ${startTime} to ${endDay} at ${endTime}`
-
         toast({
           title: 'Clocked out!',
-          description,
+          description: clockOutDescription(start, end),
         })
       } else {
         toast({

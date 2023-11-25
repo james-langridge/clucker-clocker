@@ -3,12 +3,6 @@ import {NextRequest, NextResponse} from 'next/server'
 import {auth} from '@/auth'
 import {db} from '@/lib/db'
 
-type Body = {
-  start: string
-  end: string
-  userId: string
-}
-
 export async function POST(req: NextRequest) {
   try {
     const session = await auth()
@@ -20,12 +14,24 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const {start, userId}: Body = await req.json()
+    const {
+      start,
+      end,
+      userId,
+      tagId,
+    }: {
+      start: Date
+      end?: Date
+      userId: string
+      tagId?: string
+    } = await req.json()
 
     const clockedTime = await db.clockedTime.create({
       data: {
         start: new Date(start),
         userId,
+        ...(end !== undefined && {end: new Date(end)}),
+        ...(tagId !== undefined && {tagId}),
       },
     })
 

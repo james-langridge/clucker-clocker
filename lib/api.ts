@@ -7,6 +7,24 @@ export async function getLastClockedTime(id?: string): Promise<ClockedTime> {
     return Promise.reject(new Error('Invalid id'))
   }
 
+  const res = await fetch(`/api/user/${id}/last-clocked-time`)
+
+  const jsonRes = await res.json()
+
+  if (!res.ok) {
+    throw new Error(jsonRes.error || 'An error occurred')
+  }
+
+  return jsonRes.data
+}
+
+export async function getClockedTimes(
+  id?: string,
+): Promise<ClockedTime & {tag: Tag | null}[]> {
+  if (typeof id === 'undefined') {
+    return Promise.reject(new Error('Invalid id'))
+  }
+
   const res = await fetch(`/api/user/${id}/clocked-times`)
 
   const jsonRes = await res.json()
@@ -18,12 +36,14 @@ export async function getLastClockedTime(id?: string): Promise<ClockedTime> {
   return jsonRes.data
 }
 
-export async function clockIn({
+export async function createClockedTime({
   start,
+  end,
   userId,
   tagId,
 }: {
   start: Date
+  end?: Date
   userId: string
   tagId?: string
 }) {
@@ -31,7 +51,14 @@ export async function clockIn({
     return Promise.reject(new Error('Invalid id'))
   }
 
-  const body: {start: Date; userId: string; tagId?: string} = {start, userId}
+  const body: {start: Date; end?: Date; userId: string; tagId?: string} = {
+    start,
+    userId,
+  }
+
+  if (end) {
+    body.end = end
+  }
 
   if (tagId) {
     body.tagId = tagId

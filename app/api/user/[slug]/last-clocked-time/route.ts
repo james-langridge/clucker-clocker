@@ -19,7 +19,7 @@ export async function GET(
 
     const id = params.slug
 
-    const clockedTime = await db.clockedTime.findMany({
+    const clockedTime = await db.clockedTime.findFirst({
       where: {
         userId: id,
         deleted: false,
