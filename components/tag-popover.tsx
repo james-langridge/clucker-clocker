@@ -44,7 +44,7 @@ export function TagPopover({
             size="sm"
             className="w-[150px] justify-start"
           >
-            {selectedTag ? <>{selectedTag.name}</> : <>+ Set tag</>}
+            {selectedTag ? <>{selectedTag.name}</> : <>Select</>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0" align="start">
