@@ -25,15 +25,15 @@ export function MainNav() {
       </CustomLink>
       <NavigationMenu>
         <NavigationMenuList>
+          {/*<NavigationMenuItem>*/}
+          {/*  <NavigationMenuLink*/}
+          {/*    href="/help"*/}
+          {/*    className={navigationMenuTriggerStyle()}*/}
+          {/*  >*/}
+          {/*    Help*/}
+          {/*  </NavigationMenuLink>*/}
+          {/*</NavigationMenuItem>*/}
           <NavigationMenuItem>
-            <NavigationMenuLink
-              href="/help"
-              className={navigationMenuTriggerStyle()}
-            >
-              Help
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="hidden sm:block">
             <NavigationMenuLink
               href="/log"
               className={navigationMenuTriggerStyle()}

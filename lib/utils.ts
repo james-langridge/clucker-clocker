@@ -1,5 +1,11 @@
 import {type ClassValue, clsx} from 'clsx'
-import {format, isSameDay} from 'date-fns'
+import {
+  differenceInHours,
+  differenceInMinutes,
+  differenceInSeconds,
+  format,
+  isSameDay,
+} from 'date-fns'
 import {twMerge} from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -16,4 +22,24 @@ export function clockOutDescription(start: Date, end: Date) {
   return isDaySame
     ? `${startDay} from ${startTime} to ${endTime}`
     : `${startDay} at ${startTime} to ${endDay} at ${endTime}`
+}
+
+export function getDuration(start: Date, end: Date) {
+  const startDate = new Date(start)
+  const endDate = new Date(end)
+  const hours = differenceInHours(endDate, startDate)
+  const minutes = differenceInMinutes(endDate, startDate) % 60
+  const seconds = differenceInSeconds(endDate, startDate) % 60
+
+  let duration = `${seconds} s`
+
+  if (minutes) {
+    duration = `${minutes} m `
+  }
+
+  if (hours) {
+    duration = `${hours} h ` + duration
+  }
+
+  return duration
 }

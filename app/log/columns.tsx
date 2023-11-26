@@ -3,18 +3,14 @@
 import {ClockedTime} from '.prisma/client'
 import {Tag} from '@prisma/client'
 import {ColumnDef} from '@tanstack/react-table'
-import {
-  differenceInHours,
-  differenceInMinutes,
-  differenceInSeconds,
-  format,
-} from 'date-fns'
+import {differenceInSeconds, format} from 'date-fns'
 import {ArrowUpDown} from 'lucide-react'
 
 import DeleteConfirmation from '@/app/log/delete-confirmation'
 import {Badge} from '@/components/ui/badge'
 import {Button} from '@/components/ui/button'
 import {Checkbox} from '@/components/ui/checkbox'
+import {getDuration} from '@/lib/utils'
 
 export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
   {
@@ -147,23 +143,7 @@ export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
         return null
       }
 
-      const startDate = new Date(row.original.start)
-      const endDate = new Date(row.original.end)
-      const hours = differenceInHours(endDate, startDate)
-      const minutes = differenceInMinutes(endDate, startDate) % 60
-      const seconds = differenceInSeconds(endDate, startDate) % 60
-
-      let duration = `${seconds} s`
-
-      if (minutes) {
-        duration = `${minutes} m ` + duration
-      }
-
-      if (hours) {
-        duration = `${hours} h ` + duration
-      }
-
-      return duration
+      return getDuration(row.original.start, row.original.end)
     },
   },
   {
