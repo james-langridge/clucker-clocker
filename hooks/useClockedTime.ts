@@ -105,6 +105,13 @@ export function useClockedTime({userId}: {userId?: string}) {
         })
       }
 
+      if (updatedClockedTime.tagId === null) {
+        toast({
+          description: `Removed tag!`,
+          variant: 'destructive',
+        })
+      }
+
       await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
       const previousLastClockedTime = queryClient.getQueryData([
         'lastClockedTime',

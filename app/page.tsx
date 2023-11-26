@@ -1,7 +1,7 @@
 import {dehydrate, HydrationBoundary, QueryClient} from '@tanstack/react-query'
 
+import HomePage from '@/app/home-page'
 import {auth} from '@/auth'
-import Clock from '@/components/clock'
 import {getLastClockedTime, getTags} from '@/lib/api'
 
 export default async function Home() {
@@ -21,7 +21,7 @@ export default async function Home() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Clock userId={session?.user?.id} />
+      <HomePage userId={session?.user?.id} />
     </HydrationBoundary>
   )
 }

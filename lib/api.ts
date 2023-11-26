@@ -88,7 +88,7 @@ export async function updateClockedTime({
   start?: Date
   end?: Date
   id: string
-  tagId?: string
+  tagId?: string | null
   deleted?: boolean
 }): Promise<ClockedTime> {
   if (typeof id === 'undefined') {
@@ -99,7 +99,7 @@ export async function updateClockedTime({
     start?: Date
     end?: Date
     id: string
-    tagId?: string
+    tagId?: string | null
     deleted?: boolean
   } = {id}
 
@@ -111,7 +111,7 @@ export async function updateClockedTime({
     body.end = end
   }
 
-  if (tagId) {
+  if (tagId !== undefined) {
     body.tagId = tagId
   }
 

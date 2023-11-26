@@ -1,16 +1,17 @@
-'use client'
-
+import {Tag} from '@prisma/client'
 import * as React from 'react'
 import {useIsClient} from 'usehooks-ts'
 
 import ClockInButton from '@/components/clock-in-button'
 import SignInDialog from '@/components/sign-in-dialog'
-import TagDialog from '@/components/tag-dialog'
-import {useClockedTime} from '@/hooks/useClockedTime'
 
-export default function Clock({userId}: {userId?: string}) {
-  const {lastClockedTime} = useClockedTime({userId})
-  const isClockedIn = lastClockedTime && !lastClockedTime.end
+export default function Clock({
+  userId,
+  selectedTag,
+}: {
+  userId?: string
+  selectedTag: Tag | null
+}) {
   const isClient = useIsClient()
 
   if (!isClient) {
@@ -27,21 +28,5 @@ export default function Clock({userId}: {userId?: string}) {
     )
   }
 
-  if (isClockedIn && !lastClockedTime?.tagId) {
-    return (
-      <TagDialog userId={userId}>
-        <ClockInButton userId={userId} />
-      </TagDialog>
-    )
-  }
-
-  if (isClockedIn && lastClockedTime?.tagId) {
-    return <ClockInButton userId={userId} />
-  }
-
-  return (
-    <TagDialog userId={userId}>
-      <ClockInButton userId={userId} />
-    </TagDialog>
-  )
+  return <ClockInButton userId={userId} selectedTag={selectedTag} />
 }
