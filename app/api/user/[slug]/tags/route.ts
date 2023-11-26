@@ -24,6 +24,9 @@ export async function GET(
         userId: id,
         deleted: false,
       },
+      orderBy: {
+        name: 'asc',
+      },
     })
 
     return NextResponse.json({data: tags}, {status: 200})
