@@ -49,7 +49,7 @@ export function TagPopover({
         </PopoverTrigger>
         <PopoverContent className="p-0" align="start">
           <Command>
-            <CommandInput placeholder="Change tag..." />
+            <CommandInput placeholder="Search tags..." />
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
@@ -72,17 +72,18 @@ export function TagPopover({
                   tags.map(tag => (
                     <CommandItem
                       key={tag.id}
-                      value={tag.id}
-                      onSelect={value => {
+                      value={tag.name}
+                      onSelect={() => {
                         setSelectedTag(
-                          tags.find(tag => tag.id === value) || null,
+                          tags.find(tagListTag => tagListTag.id === tag.id) ||
+                            null,
                         )
                         setOpen(false)
 
                         if (isClockedIn) {
                           mutateClockedTime({
                             id: lastClockedTime.id,
-                            tagId: value,
+                            tagId: tag.id,
                           })
                         }
                       }}
