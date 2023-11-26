@@ -1,3 +1,4 @@
+import {ClockedTime} from '.prisma/client'
 import {useMutation, useQueryClient, useQuery} from '@tanstack/react-query'
 
 import {useToast} from '@/components/ui/use-toast'
@@ -70,11 +71,14 @@ export function useClockedTime({userId}: {userId?: string}) {
       }
 
       await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
-      const previousLastClockedTime = queryClient.getQueryData([
+      const previousLastClockedTime = queryClient.getQueryData<ClockedTime>([
         'lastClockedTime',
         userId,
       ])
-      queryClient.setQueryData(['lastClockedTime', userId], updatedClockedTime)
+      queryClient.setQueryData(['lastClockedTime', userId], {
+        ...updatedClockedTime,
+        tagId: previousLastClockedTime?.tagId,
+      })
 
       return {previousLastClockedTime}
     },
