@@ -1,11 +1,15 @@
 'use client'
 
 import {Tag} from '@prisma/client'
+import dynamic from 'next/dynamic'
 import * as React from 'react'
 
-import {AddTagDialog} from '@/components/add-tag-dialog'
 import Clock from '@/components/clock'
-import {TagPopover} from '@/components/tag-popover'
+
+const DynamicTagPopover = dynamic(() => import('../components/tag-popover'))
+const DynamicAddTagDialog = dynamic(
+  () => import('../components/add-tag-dialog'),
+)
 
 export default function HomePage({userId}: {userId?: string}) {
   const [selectedTag, setSelectedTag] = React.useState<Tag | null>(null)
@@ -14,12 +18,12 @@ export default function HomePage({userId}: {userId?: string}) {
     <>
       <Clock userId={userId} selectedTag={selectedTag} />
       <div className="flex space-x-2">
-        <TagPopover
+        <DynamicTagPopover
           userId={userId}
           selectedTag={selectedTag}
           setSelectedTag={setSelectedTag}
-        />{' '}
-        <AddTagDialog userId={userId} />
+        />
+        <DynamicAddTagDialog userId={userId} />
       </div>
     </>
   )

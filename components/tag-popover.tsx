@@ -1,21 +1,18 @@
 import {Tag} from '@prisma/client'
+import dynamic from 'next/dynamic'
 import * as React from 'react'
 import {Dispatch, SetStateAction, useEffect} from 'react'
 
 import {Button} from '@/components/ui/button'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover'
+import {Popover, PopoverTrigger} from '@/components/ui/popover'
 import {useClockedTime} from '@/hooks/useClockedTime'
 import {useTag} from '@/hooks/useTag'
 
-export function TagPopover({
+const DynamicPopoverContent = dynamic(
+  () => import('../components/tag-popover-content'),
+)
+
+export default function TagPopover({
   userId,
   selectedTag,
   setSelectedTag,
@@ -27,8 +24,7 @@ export function TagPopover({
   const [open, setOpen] = React.useState(false)
 
   const {tags} = useTag({userId})
-  const {lastClockedTime, mutateClockedTime} = useClockedTime({userId})
-  const isClockedIn = lastClockedTime && !lastClockedTime.end
+  const {lastClockedTime} = useClockedTime({userId})
 
   useEffect(() => {
     setSelectedTag(tags?.find(tag => tag.id === lastClockedTime?.tagId) || null)
@@ -47,54 +43,15 @@ export function TagPopover({
             {selectedTag ? <>{selectedTag.name}</> : <>Select</>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="p-0" align="start">
-          <Command>
-            <CommandInput placeholder="Search tags..." />
-            <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup>
-                <CommandItem
-                  onSelect={() => {
-                    setSelectedTag(null)
-                    setOpen(false)
-
-                    if (isClockedIn) {
-                      mutateClockedTime({
-                        id: lastClockedTime.id,
-                        tagId: null,
-                      })
-                    }
-                  }}
-                >
-                  <span>None</span>
-                </CommandItem>
-                {tags &&
-                  tags.map(tag => (
-                    <CommandItem
-                      key={tag.id}
-                      value={tag.name}
-                      onSelect={() => {
-                        setSelectedTag(
-                          tags.find(tagListTag => tagListTag.id === tag.id) ||
-                            null,
-                        )
-                        setOpen(false)
-
-                        if (isClockedIn) {
-                          mutateClockedTime({
-                            id: lastClockedTime.id,
-                            tagId: tag.id,
-                          })
-                        }
-                      }}
-                    >
-                      <span>{tag.name}</span>
-                    </CommandItem>
-                  ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
+        {open && (
+          <DynamicPopoverContent
+            tags={tags}
+            setOpen={setOpen}
+            setSelectedTag={setSelectedTag}
+            lastClockedTime={lastClockedTime}
+            userId={userId}
+          />
+        )}
       </Popover>
     </div>
   )
