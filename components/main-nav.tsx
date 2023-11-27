@@ -41,6 +41,14 @@ export function MainNav() {
               Log
             </NavigationMenuLink>
           </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              href="/tags"
+              className={navigationMenuTriggerStyle()}
+            >
+              Tags
+            </NavigationMenuLink>
+          </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
     </div>

@@ -29,3 +29,54 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({error: 'Internal Server Error'}, {status: 500})
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await auth()
+
+    if (!session) {
+      return NextResponse.json(
+        {message: 'You must be logged in.'},
+        {status: 401},
+      )
+    }
+
+    const {
+      id,
+      deleted,
+    }: {
+      id: string
+      deleted: boolean
+    } = await req.json()
+
+    if (deleted) {
+      const tag = await db.$transaction(async db => {
+        await db.clockedTime.updateMany({
+          where: {tagId: id},
+          data: {tagId: null},
+        })
+
+        return db.tag.update({
+          where: {id},
+          data: {
+            deleted,
+          },
+        })
+      })
+
+      return NextResponse.json({data: tag}, {status: 201})
+    }
+
+    const tag = await db.tag.update({
+      where: {id},
+      data: {
+        deleted,
+      },
+    })
+
+    return NextResponse.json({data: tag}, {status: 201})
+  } catch (e) {
+    console.error(e)
+    return NextResponse.json({error: 'Internal Server Error'}, {status: 500})
+  }
+}
