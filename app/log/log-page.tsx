@@ -1,13 +1,16 @@
 'use client'
 
+import {ColumnDef} from '@tanstack/react-table'
+import dynamic from 'next/dynamic'
 import * as React from 'react'
 import {useIsClient, useMediaQuery} from 'usehooks-ts'
 
 import {columns} from '@/app/log/columns'
-import {DataTable} from '@/app/log/data-table'
 import {mobileColumns} from '@/app/log/mobile-columns'
-import {MobileDataTable} from '@/app/log/mobile-data-table'
-import {AddTimeForm} from '@/components/add-time-form'
+
+const DynamicDataTable = dynamic(() => import('./data-table'))
+const DynamicAddTimeForm = dynamic(() => import('@/components/add-time-form'))
+const DynamicMobileDataTable = dynamic(() => import('./mobile-data-table'))
 
 type User =
   | {
@@ -42,9 +45,9 @@ export default function LogPage({user}: {user: User}) {
   if (isNotMobile) {
     return (
       <div className="container mx-auto sm:space-y-4">
-        <AddTimeForm tags={user.tags} userId={user.id} />
-        <DataTable
-          columns={columns}
+        <DynamicAddTimeForm tags={user.tags} userId={user.id} />
+        <DynamicDataTable
+          columns={columns as ColumnDef<unknown, unknown>[]}
           data={user.clockedTimes}
           tags={user.tags}
         />
@@ -54,7 +57,10 @@ export default function LogPage({user}: {user: User}) {
 
   return (
     <div className="container mx-auto sm:space-y-4 px-2">
-      <MobileDataTable columns={mobileColumns} data={user.clockedTimes} />
+      <DynamicMobileDataTable
+        columns={mobileColumns as ColumnDef<unknown, unknown>[]}
+        data={user.clockedTimes}
+      />
     </div>
   )
 }

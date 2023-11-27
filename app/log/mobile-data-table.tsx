@@ -28,7 +28,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function MobileDataTable<TData, TValue>({
+export default function MobileDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {

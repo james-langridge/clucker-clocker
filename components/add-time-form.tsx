@@ -47,7 +47,13 @@ function isValidTime(value: string) {
   return timeRegex.test(value)
 }
 
-export function AddTimeForm({tags, userId}: {tags: Tag[]; userId: string}) {
+export default function AddTimeForm({
+  tags,
+  userId,
+}: {
+  tags: Tag[]
+  userId: string
+}) {
   const [startPopoverOpen, setStartPopoverOpen] = useState(false)
   const [endPopoverOpen, setEndPopoverOpen] = useState(false)
   const router = useRouter()

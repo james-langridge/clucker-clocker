@@ -31,7 +31,7 @@ interface DataTableProps<TData, TValue> {
   tags: Tag[]
 }
 
-export function DataTable<TData, TValue>({
+export default function DataTable<TData, TValue>({
   columns,
   data,
   tags,
