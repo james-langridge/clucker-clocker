@@ -7,6 +7,7 @@ import {useIsClient, useMediaQuery} from 'usehooks-ts'
 
 import {columns} from '@/app/log/columns'
 import {mobileColumns} from '@/app/log/mobile-columns'
+import {Separator} from '@/components/ui/separator'
 
 const DynamicDataTable = dynamic(() => import('./data-table'))
 const DynamicAddTimeForm = dynamic(() => import('@/components/add-time-form'))
@@ -31,7 +32,7 @@ type User =
   | undefined
 
 export default function LogPage({user}: {user: User}) {
-  const isNotMobile = useMediaQuery('(min-width: 640px)')
+  const isLargeScreen = useMediaQuery('(min-width: 1536px)')
   const isClient = useIsClient()
 
   if (!user) {
@@ -42,15 +43,29 @@ export default function LogPage({user}: {user: User}) {
     return null
   }
 
-  if (isNotMobile) {
+  if (isLargeScreen) {
     return (
       <div className="container mx-auto sm:space-y-4">
-        <DynamicAddTimeForm tags={user.tags} userId={user.id} />
-        <DynamicDataTable
-          columns={columns as ColumnDef<unknown, unknown>[]}
-          data={user.clockedTimes}
-          tags={user.tags}
-        />
+        <div className="grid lg:grid-cols-5 gap-20">
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium">Clock a time</h3>
+              <p className="text-sm text-muted-foreground">
+                Forgot to clock in? Don&apos;t cluck out. You can add it here.
+              </p>
+            </div>
+            <Separator />
+            <DynamicAddTimeForm tags={user.tags} userId={user.id} />
+          </div>
+
+          <div className="col-span-3 lg:col-span-4">
+            <DynamicDataTable
+              columns={columns as ColumnDef<unknown, unknown>[]}
+              data={user.clockedTimes}
+              tags={user.tags}
+            />
+          </div>
+        </div>
       </div>
     )
   }

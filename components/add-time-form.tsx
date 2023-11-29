@@ -13,13 +13,6 @@ import * as z from 'zod'
 import {Button} from '@/components/ui/button'
 import {Calendar} from '@/components/ui/calendar'
 import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
   Form,
   FormControl,
   FormField,
@@ -47,13 +40,12 @@ function isValidTime(value: string) {
   return timeRegex.test(value)
 }
 
-export default function AddTimeForm({
-  tags,
-  userId,
-}: {
+interface AddTimeFormProps {
   tags: Tag[]
   userId: string
-}) {
+}
+
+export default function AddTimeForm({tags, userId}: AddTimeFormProps) {
   const [startPopoverOpen, setStartPopoverOpen] = useState(false)
   const [endPopoverOpen, setEndPopoverOpen] = useState(false)
   const router = useRouter()
@@ -132,215 +124,174 @@ export default function AddTimeForm({
   }
 
   return (
-    <Card className="max-w-fit">
-      <CardHeader>
-        <CardTitle>Clock a time</CardTitle>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent>
-            <div className="flex space-x-4">
-              <div className="flex flex-col space-y-4">
-                <FormField
-                  control={form.control}
-                  name="start"
-                  render={({field}) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Start day</FormLabel>
-                      <Popover
-                        open={startPopoverOpen}
-                        onOpenChange={setStartPopoverOpen}
-                      >
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={'outline'}
-                              className={cn(
-                                'w-[240px] pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground',
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, 'PPP')
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value ?? undefined}
-                            disabled={date =>
-                              date > new Date() || date < new Date('1900-01-01')
-                            }
-                            onSelect={date => {
-                              field.onChange(date)
-                              setStartPopoverOpen(false)
-                            }}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="startTime"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>Start time</FormLabel>
-                      <FormControl>
-                        <Input type="time" placeholder="00:00" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="flex flex-col space-y-4">
-                <FormField
-                  control={form.control}
-                  name="end"
-                  render={({field}) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>End day</FormLabel>
-                      <Popover
-                        open={endPopoverOpen}
-                        onOpenChange={setEndPopoverOpen}
-                      >
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={'outline'}
-                              className={cn(
-                                'w-[240px] pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground',
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, 'PPP')
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value ?? undefined}
-                            onSelect={date => {
-                              field.onChange(date)
-                              setEndPopoverOpen(false)
-                            }}
-                            disabled={date =>
-                              date > new Date() || date < new Date('1900-01-01')
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="endTime"
-                  render={({field}) => (
-                    <FormItem>
-                      <FormLabel>End time</FormLabel>
-                      <FormControl>
-                        <Input type="time" placeholder="00:00" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <FormField
-                control={form.control}
-                name="tagId"
-                render={({field}) => (
-                  <FormItem>
-                    <FormLabel>Tag</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="start"
+          render={({field}) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Start day</FormLabel>
+              <Popover
+                open={startPopoverOpen}
+                onOpenChange={setStartPopoverOpen}
+              >
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'w-[240px] pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground',
+                      )}
                     >
-                      <FormControl>
-                        <SelectTrigger>
-                          {field.value ? (
-                            <SelectValue placeholder="Select a tag" />
-                          ) : (
-                            'Select a tag'
-                          )}
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="none">Select a tag</SelectItem>
-                        {tags.map(tag => (
-                          <SelectItem key={tag.id} value={tag.id}>
-                            {tag.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      {field.value ? (
+                        format(field.value, 'PPP')
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value ?? undefined}
+                    disabled={date =>
+                      date > new Date() || date < new Date('1900-01-01')
+                    }
+                    onSelect={date => {
+                      field.onChange(date)
+                      setStartPopoverOpen(false)
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-              {/*<Controller*/}
-              {/*  control={form.control}*/}
-              {/*  name="tagId"*/}
-              {/*  render={({field}) => (*/}
-              {/*    <Select onValueChange={field.onChange} value={field.value}>*/}
-              {/*      <FormControl>*/}
-              {/*        <SelectTrigger>*/}
-              {/*          <SelectValue placeholder="Select a tag" />*/}
-              {/*        </SelectTrigger>*/}
-              {/*      </FormControl>*/}
-              {/*      <SelectContent>*/}
-              {/*        <SelectItem value="none">Select a tag</SelectItem>*/}
-              {/*        {tags.map(tag => (*/}
-              {/*          <SelectItem key={tag.id} value={tag.id}>*/}
-              {/*            {tag.name}*/}
-              {/*          </SelectItem>*/}
-              {/*        ))}*/}
-              {/*      </SelectContent>*/}
-              {/*    </Select>*/}
-              {/*  )}*/}
-              {/*/>*/}
-            </div>
-          </CardContent>
-          <CardFooter className="justify-between space-x-2">
-            <Button
-              variant="ghost"
-              onClick={e => {
-                e.preventDefault()
-                form.reset()
-              }}
-            >
-              Reset
-            </Button>
-            <Button type="submit">Submit</Button>
-          </CardFooter>
-        </form>
-      </Form>
-    </Card>
+        <FormField
+          control={form.control}
+          name="startTime"
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>Start time</FormLabel>
+              <FormControl>
+                <Input type="time" placeholder="00:00" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="end"
+          render={({field}) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>End day</FormLabel>
+              <Popover open={endPopoverOpen} onOpenChange={setEndPopoverOpen}>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'w-[240px] pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground',
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, 'PPP')
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value ?? undefined}
+                    onSelect={date => {
+                      field.onChange(date)
+                      setEndPopoverOpen(false)
+                    }}
+                    disabled={date =>
+                      date > new Date() || date < new Date('1900-01-01')
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="endTime"
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>End time</FormLabel>
+              <FormControl>
+                <Input type="time" placeholder="00:00" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="tagId"
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>Tag</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                value={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    {field.value ? (
+                      <SelectValue placeholder="Select a tag" />
+                    ) : (
+                      'Select a tag'
+                    )}
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="none">Select a tag</SelectItem>
+                  {tags.map(tag => (
+                    <SelectItem key={tag.id} value={tag.id}>
+                      {tag.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          variant="ghost"
+          onClick={e => {
+            e.preventDefault()
+            form.reset()
+          }}
+        >
+          Reset
+        </Button>
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
   )
 }
