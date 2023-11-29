@@ -58,5 +58,6 @@ export function useCount(userId?: string) {
     hours,
     minutes,
     seconds,
+    isClockedIn,
   }
 }
