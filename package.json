@@ -6,6 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
+    "lint:fix": "eslint . --fix",
     "postinstall": "prisma generate",
     "start": "next start"
   },
