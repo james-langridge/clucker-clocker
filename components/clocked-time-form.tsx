@@ -1,5 +1,6 @@
 'use client'
 
+import {ClockedTime} from '.prisma/client'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {Tag} from '@prisma/client'
 import {format} from 'date-fns'
@@ -10,6 +11,7 @@ import {useState} from 'react'
 import {useForm} from 'react-hook-form'
 import * as z from 'zod'
 
+import revalidate from '@/app/log/[id]/actions'
 import {Button} from '@/components/ui/button'
 import {Calendar} from '@/components/ui/calendar'
 import {
@@ -30,7 +32,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {toast} from '@/components/ui/use-toast'
-import {createClockedTime} from '@/lib/api'
+import {createClockedTime, updateClockedTime} from '@/lib/api'
 import {getErrorMessage} from '@/lib/errors'
 import {clockOutDescription, cn} from '@/lib/utils'
 
@@ -42,10 +44,15 @@ function isValidTime(value: string) {
 
 interface AddTimeFormProps {
   tags: Tag[]
+  time?: ClockedTime
   userId: string
 }
 
-export default function AddTimeForm({tags, userId}: AddTimeFormProps) {
+export default function ClockedTimeForm({
+  tags,
+  time,
+  userId,
+}: AddTimeFormProps) {
   const [startPopoverOpen, setStartPopoverOpen] = useState(false)
   const [endPopoverOpen, setEndPopoverOpen] = useState(false)
   const router = useRouter()
@@ -81,11 +88,11 @@ export default function AddTimeForm({tags, userId}: AddTimeFormProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      start: undefined,
-      end: undefined,
-      startTime: '',
-      endTime: '',
-      tagId: undefined,
+      start: time?.start ?? undefined,
+      end: time?.end ?? undefined,
+      startTime: time?.start ? format(time.start, 'HH:mm') : '',
+      endTime: time?.end ? format(time.end, 'HH:mm') : '',
+      tagId: time?.tagId ?? undefined,
     },
   })
 
@@ -104,22 +111,29 @@ export default function AddTimeForm({tags, userId}: AddTimeFormProps) {
       return
     }
 
-    try {
-      await createClockedTime({start, end, tagId, userId})
+    if (time) {
+      await updateClockedTime({start, end, tagId, id: time.id})
 
-      toast({
-        title: 'Clocked out!',
-        description: clockOutDescription(start, end),
-      })
+      await revalidate()
+      router.back()
+    } else {
+      try {
+        await createClockedTime({start, end, tagId, userId})
 
-      form.reset()
-      router.refresh()
-    } catch (e) {
-      toast({
-        title: 'Error clocking time...',
-        description: getErrorMessage(e),
-        variant: 'destructive',
-      })
+        toast({
+          title: 'Clocked out!',
+          description: clockOutDescription(start, end),
+        })
+
+        form.reset()
+        router.refresh()
+      } catch (e) {
+        toast({
+          title: 'Error clocking time...',
+          description: getErrorMessage(e),
+          variant: 'destructive',
+        })
+      }
     }
   }
 
@@ -281,16 +295,30 @@ export default function AddTimeForm({tags, userId}: AddTimeFormProps) {
           )}
         />
 
-        <Button
-          variant="ghost"
-          onClick={e => {
-            e.preventDefault()
-            form.reset()
-          }}
-        >
-          Reset
-        </Button>
-        <Button type="submit">Submit</Button>
+        <div className="space-x-2">
+          {time ? (
+            <Button
+              variant="destructive"
+              onClick={e => {
+                e.preventDefault()
+                router.back()
+              }}
+            >
+              Cancel
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              onClick={e => {
+                e.preventDefault()
+                form.reset()
+              }}
+            >
+              Reset
+            </Button>
+          )}
+          <Button type="submit">Submit</Button>
+        </div>
       </form>
     </Form>
   )

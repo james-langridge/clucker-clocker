@@ -2,9 +2,11 @@
 
 import {ClockedTime} from '.prisma/client'
 import {Tag} from '@prisma/client'
+import {Pencil2Icon} from '@radix-ui/react-icons'
 import {ColumnDef} from '@tanstack/react-table'
 import {differenceInSeconds, format} from 'date-fns'
 import {ArrowUpDown} from 'lucide-react'
+import Link from 'next/link'
 
 import DeleteConfirmation from '@/app/log/delete-confirmation'
 import {Badge} from '@/components/ui/badge'
@@ -175,7 +177,17 @@ export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
   {
     id: 'actions',
     cell: ({row}) => {
-      return <DeleteConfirmation id={row.original.id} />
+      return (
+        <div className="flex">
+          <DeleteConfirmation id={row.original.id} />{' '}
+          <Link href={`/log/${row.original.id}`}>
+            <Button variant="ghost" className="flex h-8 w-8 p-0">
+              <Pencil2Icon className="h-4 w-4" />
+            </Button>
+            <span className="sr-only">Edit</span>
+          </Link>
+        </div>
+      )
     },
   },
 ]

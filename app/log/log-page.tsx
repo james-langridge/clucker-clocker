@@ -10,7 +10,9 @@ import {mobileColumns} from '@/app/log/mobile-columns'
 import {Separator} from '@/components/ui/separator'
 
 const DynamicDataTable = dynamic(() => import('./data-table'))
-const DynamicAddTimeForm = dynamic(() => import('@/components/add-time-form'))
+const DynamicClockedTimeForm = dynamic(
+  () => import('@/components/clocked-time-form'),
+)
 const DynamicMobileDataTable = dynamic(() => import('./mobile-data-table'))
 
 type User =
@@ -55,7 +57,7 @@ export default function LogPage({user}: {user: User}) {
               </p>
             </div>
             <Separator />
-            <DynamicAddTimeForm tags={user.tags} userId={user.id} />
+            <DynamicClockedTimeForm tags={user.tags} userId={user.id} />
           </div>
 
           <div className="col-span-3 lg:col-span-4">
