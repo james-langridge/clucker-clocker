@@ -1,3 +1,5 @@
+import {ClockIcon} from '@radix-ui/react-icons'
+
 import {signInAction} from '@/app/actions'
 import {
   AlertDialog,
@@ -15,9 +17,7 @@ export default function SignInDialog() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <button className="bg-emerald-700 rounded-full w-full max-w-xs h-80">
-          0h 0m 0s
-        </button>
+        <ClockIcon className="text-green-600 h-72 w-72" />
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

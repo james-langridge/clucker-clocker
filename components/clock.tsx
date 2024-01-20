@@ -19,13 +19,7 @@ export default function Clock({
   }
 
   if (!userId) {
-    return (
-      <div className="flex flex-col justify-between items-center h-full w-full">
-        <div className="grow flex flex-col justify-center items-center h-full w-full">
-          <SignInDialog />
-        </div>
-      </div>
-    )
+    return <SignInDialog />
   }
 
   return <ClockInButton userId={userId} selectedTag={selectedTag} />
