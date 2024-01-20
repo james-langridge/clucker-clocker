@@ -66,15 +66,12 @@ export async function updateClockedTime({
   id,
   tagId,
   deleted,
-} // lastClockedTime,
-: {
-  // TODO: understand why some of these are optional
-  start?: Date
-  end: Date | null
+}: {
+  start?: string | Date
+  end?: Date | null
   id: string
   tagId?: string | null
   deleted?: boolean
-  // lastClockedTime?: ClockedTime
 }): Promise<ClockedTime> {
   if (typeof id === 'undefined') {
     return Promise.reject(new Error('Invalid id'))
@@ -89,7 +86,7 @@ export async function updateClockedTime({
   } = {id}
 
   if (start) {
-    body.start = start
+    body.start = new Date(start)
   }
 
   if (end) {
