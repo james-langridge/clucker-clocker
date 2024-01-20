@@ -1,19 +1,15 @@
-import {Tag} from '@prisma/client'
 import * as React from 'react'
 import {useIsClient} from 'usehooks-ts'
 
+import {useUserId} from '@/app/user-id-provider'
 import ClockInButton from '@/components/clock-in-button'
 import SignInDialog from '@/components/sign-in-dialog'
 
-export default function Clock({
-  userId,
-  selectedTag,
-}: {
-  userId?: string
-  selectedTag: Tag | null
-}) {
+export default function Clock() {
+  const {userId} = useUserId()
   const isClient = useIsClient()
 
+  // TODO: remember why I needed this
   if (!isClient) {
     return null
   }
@@ -22,5 +18,5 @@ export default function Clock({
     return <SignInDialog />
   }
 
-  return <ClockInButton userId={userId} selectedTag={selectedTag} />
+  return <ClockInButton />
 }

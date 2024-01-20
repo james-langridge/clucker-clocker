@@ -18,24 +18,6 @@ export async function getLastClockedTime(id?: string): Promise<ClockedTime> {
   return jsonRes.data
 }
 
-export async function getClockedTimes(
-  id?: string,
-): Promise<ClockedTime & {tag: Tag | null}[]> {
-  if (typeof id === 'undefined') {
-    return Promise.reject(new Error('Invalid id'))
-  }
-
-  const res = await fetch(`/api/user/${id}/clocked-times`)
-
-  const jsonRes = await res.json()
-
-  if (!res.ok) {
-    throw new Error(jsonRes.error || 'An error occurred')
-  }
-
-  return jsonRes.data
-}
-
 export async function createClockedTime({
   start,
   end,
@@ -84,12 +66,15 @@ export async function updateClockedTime({
   id,
   tagId,
   deleted,
-}: {
+} // lastClockedTime,
+: {
+  // TODO: understand why some of these are optional
   start?: Date
-  end?: Date
+  end: Date | null
   id: string
   tagId?: string | null
   deleted?: boolean
+  // lastClockedTime?: ClockedTime
 }): Promise<ClockedTime> {
   if (typeof id === 'undefined') {
     return Promise.reject(new Error('Invalid id'))

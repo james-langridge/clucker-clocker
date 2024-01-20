@@ -2,8 +2,8 @@ import * as React from 'react'
 
 import {useCount} from '@/hooks/useCount'
 
-export default function Counter({userId}: {userId?: string}) {
-  const {hours, minutes, seconds, isClockedIn} = useCount(userId)
+export default function Counter() {
+  const {hours, minutes, seconds, isClockedIn} = useCount()
 
   let count = `${seconds} s`
 

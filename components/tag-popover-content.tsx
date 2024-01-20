@@ -3,6 +3,7 @@ import {Tag} from '@prisma/client'
 import * as React from 'react'
 import {Dispatch, SetStateAction} from 'react'
 
+import {useSelectedTag} from '@/app/selected-tag-provider'
 import {
   Command,
   CommandEmpty,
@@ -17,18 +18,15 @@ import {useClockedTime} from '@/hooks/useClockedTime'
 export default function TagPopoverContent({
   tags,
   setOpen,
-  setSelectedTag,
   lastClockedTime,
-  userId,
 }: {
   tags?: Tag[]
   setOpen: Dispatch<SetStateAction<boolean>>
-  setSelectedTag: Dispatch<SetStateAction<Tag | null>>
   lastClockedTime?: ClockedTime
-  userId?: string
 }) {
+  const {setSelectedTag} = useSelectedTag()
   const isClockedIn = lastClockedTime && !lastClockedTime.end
-  const {mutateClockedTime} = useClockedTime({userId})
+  const {updateClockedTimeMutation} = useClockedTime()
 
   return (
     <PopoverContent className="p-0" align="start">
@@ -43,8 +41,8 @@ export default function TagPopoverContent({
                 setOpen(false)
 
                 if (isClockedIn) {
-                  mutateClockedTime({
-                    id: lastClockedTime.id,
+                  updateClockedTimeMutation({
+                    ...lastClockedTime,
                     tagId: null,
                   })
                 }
@@ -64,8 +62,8 @@ export default function TagPopoverContent({
                     setOpen(false)
 
                     if (isClockedIn) {
-                      mutateClockedTime({
-                        id: lastClockedTime.id,
+                      updateClockedTimeMutation({
+                        ...lastClockedTime,
                         tagId: tag.id,
                       })
                     }

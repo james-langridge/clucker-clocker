@@ -1,30 +1,32 @@
 'use client'
 
-import {Tag} from '@prisma/client'
-import dynamic from 'next/dynamic'
+// import dynamic from 'next/dynamic'
 import * as React from 'react'
+import {useEffect} from 'react'
 
+import SelectedTagProvider from '@/app/selected-tag-provider'
+import {useUserId} from '@/app/user-id-provider'
 import Clock from '@/components/clock'
 import Counter from '@/components/counter'
+import TagToolbar from '@/components/tag-toolbar'
 
-const DynamicTagPopover = dynamic(() => import('@/components/tag-popover'))
-const DynamicAddTagDialog = dynamic(() => import('@/components/add-tag-dialog'))
+// const TagToolbar = dynamic(() => import('@/components/tag-toolbar'))
 
 export default function HomePage({userId}: {userId?: string}) {
-  const [selectedTag, setSelectedTag] = React.useState<Tag | null>(null)
+  const {setUserId} = useUserId()
+
+  // Save the userId from the server into context
+  useEffect(() => {
+    setUserId(userId)
+  }, [setUserId, userId])
 
   return (
     <>
-      <Counter userId={userId} />
-      <Clock userId={userId} selectedTag={selectedTag} />
-      <div className="flex space-x-2">
-        <DynamicTagPopover
-          userId={userId}
-          selectedTag={selectedTag}
-          setSelectedTag={setSelectedTag}
-        />
-        <DynamicAddTagDialog userId={userId} />
-      </div>
+      <Counter />
+      <SelectedTagProvider>
+        <Clock />
+        <TagToolbar />
+      </SelectedTagProvider>
     </>
   )
 }

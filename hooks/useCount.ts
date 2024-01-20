@@ -13,23 +13,21 @@ type Count = {
   seconds: number
 }
 
-export function useCount(userId?: string) {
-  const {lastClockedTime} = useClockedTime({userId})
+const initialCount: Count = {
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+}
+
+export function useCount() {
+  const {lastClockedTime} = useClockedTime()
   const isClockedIn = lastClockedTime && !lastClockedTime.end
-  const [count, setCount] = useState<Count>({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  })
+  const [count, setCount] = useState<Count>(initialCount)
   const {hours, minutes, seconds} = count
 
   useEffect(() => {
     if (!isClockedIn) {
-      setCount({
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-      })
+      setCount(initialCount)
     }
   }, [isClockedIn])
 

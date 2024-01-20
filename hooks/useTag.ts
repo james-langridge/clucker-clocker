@@ -1,11 +1,13 @@
 import {Tag} from '@prisma/client'
 import {useMutation, useQueryClient, useQuery} from '@tanstack/react-query'
 
+import {useUserId} from '@/app/user-id-provider'
 import {useToast} from '@/components/ui/use-toast'
 import {createTag, getTags} from '@/lib/api'
 import {getErrorMessage} from '@/lib/errors'
 
-export function useTag({userId}: {userId?: string}) {
+export function useTag() {
+  const {userId} = useUserId()
   const {toast} = useToast()
   const queryClient = useQueryClient()
 
@@ -40,6 +42,7 @@ export function useTag({userId}: {userId?: string}) {
     },
   })
 
+  // This is prefetched on the server in app/page.tsx
   const {data: tags} = useQuery({
     queryKey: ['tags', userId],
     queryFn: () => getTags(userId),
