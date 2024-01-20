@@ -80,27 +80,6 @@ export default function useClockedTime() {
   const clockOut = useMutation({
     mutationFn: updateClockedTime,
     onMutate: async updatedClockedTime => {
-      const {deleted, end, start: startStr} = updatedClockedTime
-      const start = startStr && new Date(startStr)
-
-      if (deleted) {
-        // Undo clock in
-        toast({
-          description: `Cancelled clock in!`,
-          variant: 'destructive',
-        })
-      } else if (start && end) {
-        // Clock out
-        toast({
-          title: 'Clocked out!',
-          description: clockOutDescription(start, end),
-        })
-      } else {
-        toast({
-          description: 'Clocked out!',
-        })
-      }
-
       await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
       const previousLastClockedTime = queryClient.getQueryData<ClockedTime>([
         'lastClockedTime',
@@ -112,6 +91,41 @@ export default function useClockedTime() {
       })
 
       return {previousLastClockedTime}
+    },
+    onSuccess: (data, variables) => {
+      // data: the updated clocked time returned from updateClockedTime
+      // variables: the vars passed to updateClockedTime
+      // context: the object returned by onMutate
+      const {deleted, end, start: startStr} = variables
+      const start = startStr && new Date(startStr)
+      const action = (
+        <ToastAction
+          altText="Undo"
+          onClick={() => {
+            undoClockOut.mutate({...data, end: undefined})
+          }}
+        >
+          Undo
+        </ToastAction>
+      )
+
+      if (deleted) {
+        toast({
+          description: `Cancelled clock in!`,
+          variant: 'destructive',
+        })
+      } else if (start && end) {
+        toast({
+          title: 'Clocked out!',
+          description: clockOutDescription(start, end),
+          action,
+        })
+      } else {
+        toast({
+          description: 'Clocked out!',
+          action,
+        })
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
@@ -129,58 +143,52 @@ export default function useClockedTime() {
     },
   })
 
-  // TODO remove this unused mutation
-  // type UpdateClockedTimeParams = {
-  //   start?: Date
-  //   end: Date | null
-  //   id: string
-  //   tagId?: string | null
-  //   deleted?: boolean
-  // }
-  //
-  // type UndoMutationArgs = UpdateClockedTimeParams & {
-  //   lastClockedTime: ClockedTime
-  // }
-  //
-  // const undoClockIn = useMutation({
-  //   mutationFn: async (cancelledClockedTime: UndoMutationArgs) => {
-  //     const {lastClockedTime, ...clockedTimeToCancel} = cancelledClockedTime
-  //     void updateClockedTime(clockedTimeToCancel)
-  //
-  //     return {lastClockedTime}
-  //   },
-  //   onMutate: async cancelledClockedTime => {
-  //     toast({
-  //       description: `Cancelled clock in!`,
-  //       variant: 'destructive',
-  //     })
-  //
-  //     await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
-  //
-  //     // Set the clockedTimeBeforeUndo as the current lastClockedTime
-  //     queryClient.setQueryData(
-  //       ['lastClockedTime', userId],
-  //       cancelledClockedTime.lastClockedTime,
-  //     )
-  //
-  //     // Return a context object with the rolled back undo
-  //     return {rolledBackUndo: {...cancelledClockedTime, deleted: false}}
-  //   },
-  //   onSettled: () => {
-  //     queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
-  //   },
-  //   onError: (err, _, context) => {
-  //     toast({
-  //       title: 'Error cancelling clock in...',
-  //       description: getErrorMessage(err),
-  //       variant: 'destructive',
-  //     })
-  //     queryClient.setQueryData(
-  //       ['lastClockedTime', userId],
-  //       context?.rolledBackUndo,
-  //     )
-  //   },
-  // })
+  const undoClockOut = useMutation({
+    mutationFn: updateClockedTime,
+    // When mutate is called:
+    onMutate: async updatedClockedTime => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
+
+      // Snapshot the previous value
+      const previousLastClockedTime = queryClient.getQueryData([
+        'lastClockedTime',
+        userId,
+      ])
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(['lastClockedTime', userId], updatedClockedTime)
+
+      // Return a context object with the snapshotted value
+      return {previousLastClockedTime}
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
+    },
+    onSuccess: () => {
+      // data: the created clocked time returned from createClockedTime
+      // variables: the vars passed to createClockedTime
+      // context: the object returned by onMutate
+      toast({
+        description: 'Clocked back in!',
+      })
+    },
+    // If the mutation fails,
+    // use the context returned from onMutate to roll back
+    onError: (err, _, context) => {
+      toast({
+        title: 'Error clocking back in...',
+        description: getErrorMessage(err),
+        variant: 'destructive',
+      })
+      queryClient.setQueryData(
+        ['lastClockedTime', userId],
+        context?.previousLastClockedTime,
+      )
+    },
+  })
 
   return {clockIn, clockOut}
 }

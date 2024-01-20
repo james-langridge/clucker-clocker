@@ -74,7 +74,7 @@ export async function PUT(req: NextRequest) {
       data: {
         ...(deleted !== undefined && {deleted}),
         ...(start !== undefined && {start: new Date(start)}),
-        ...(end !== undefined && {end: new Date(end)}),
+        ...(end === undefined ? {end: null} : {end: new Date(end)}),
         ...(tagId !== undefined && {tagId}),
       },
     })
