@@ -7,13 +7,10 @@ import * as React from 'react'
 
 import {columns} from '@/app/tags/columns'
 
-const DynamicDataTable = dynamic(() => import('./data-table'))
+const DataTable = dynamic(() => import('./data-table'))
 
 export default function TagsPage({tags}: {tags: Tag[]}) {
   return (
-    <DynamicDataTable
-      columns={columns as ColumnDef<unknown, unknown>[]}
-      data={tags}
-    />
+    <DataTable columns={columns as ColumnDef<unknown, unknown>[]} data={tags} />
   )
 }
