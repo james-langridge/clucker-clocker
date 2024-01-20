@@ -18,7 +18,7 @@ export function useClockInButton() {
       })
     }
 
-    if (isClockedIn && lastClockedTime) {
+    if (isClockedIn && lastClockedTime.id) {
       clockOut.mutate({
         ...lastClockedTime,
         end: new Date(),
