@@ -5,7 +5,7 @@ import {useEffect} from 'react'
 import {useSelectedTag} from '@/app/selected-tag-provider'
 import {Button} from '@/components/ui/button'
 import {Popover, PopoverTrigger} from '@/components/ui/popover'
-import {useClockedTime} from '@/hooks/useClockedTime'
+import {useLastClockedTime} from '@/hooks/useClockedTime'
 import {useTag} from '@/hooks/useTag'
 
 const PopoverContent = dynamic(
@@ -16,7 +16,7 @@ export default function TagPopover() {
   const [open, setOpen] = React.useState(false)
   const {setSelectedTag, selectedTag} = useSelectedTag()
   const {tags} = useTag()
-  const {lastClockedTime} = useClockedTime()
+  const {lastClockedTime} = useLastClockedTime()
 
   // Selected tag defaults to last used
   useEffect(() => {

@@ -13,7 +13,7 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import {PopoverContent} from '@/components/ui/popover'
-import {useClockedTime} from '@/hooks/useClockedTime'
+import {useTagClockedTime} from '@/hooks/useClockedTime'
 
 export default function TagPopoverContent({
   tags,
@@ -26,7 +26,7 @@ export default function TagPopoverContent({
 }) {
   const {setSelectedTag} = useSelectedTag()
   const isClockedIn = lastClockedTime && !lastClockedTime.end
-  const {updateClockedTimeMutation} = useClockedTime()
+  const {tagClockedTime} = useTagClockedTime()
 
   return (
     <PopoverContent className="p-0" align="start">
@@ -41,7 +41,7 @@ export default function TagPopoverContent({
                 setOpen(false)
 
                 if (isClockedIn) {
-                  updateClockedTimeMutation({
+                  tagClockedTime({
                     ...lastClockedTime,
                     tagId: null,
                   })
@@ -62,7 +62,7 @@ export default function TagPopoverContent({
                     setOpen(false)
 
                     if (isClockedIn) {
-                      updateClockedTimeMutation({
+                      tagClockedTime({
                         ...lastClockedTime,
                         tagId: tag.id,
                       })

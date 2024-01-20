@@ -5,7 +5,7 @@ import {
 } from 'date-fns'
 import {useEffect, useState} from 'react'
 
-import {useClockedTime} from '@/hooks/useClockedTime'
+import {useLastClockedTime} from '@/hooks/useClockedTime'
 
 type Count = {
   hours: number
@@ -20,7 +20,7 @@ const initialCount: Count = {
 }
 
 export function useCount() {
-  const {lastClockedTime} = useClockedTime()
+  const {lastClockedTime} = useLastClockedTime()
   const isClockedIn = lastClockedTime && !lastClockedTime.end
   const [count, setCount] = useState<Count>(initialCount)
   const {hours, minutes, seconds} = count

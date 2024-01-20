@@ -7,22 +7,23 @@ import {useSelectedTag} from '@/app/selected-tag-provider'
 import {useUserId} from '@/app/user-id-provider'
 import {ToastAction} from '@/components/ui/toast'
 import {useToast} from '@/components/ui/use-toast'
-import {useClockedTime} from '@/hooks/useClockedTime'
+import useClockedTime, {useLastClockedTime} from '@/hooks/useClockedTime'
 
 export default function ClockInButton() {
   const {userId} = useUserId()
   const {selectedTag} = useSelectedTag()
-  const {data, clockIn, clockOut, lastClockedTime, undo} = useClockedTime()
+  const {lastClockedTime} = useLastClockedTime()
   const isClockedIn = lastClockedTime && !lastClockedTime.end
   const {toast} = useToast()
+  const {clockIn, clockOut, undoClockIn} = useClockedTime()
 
   const isClockedInRef = useRef(isClockedIn)
-  const dataRef = useRef(data)
+  const dataRef = useRef(clockIn.data)
 
   useEffect(() => {
     isClockedInRef.current = isClockedIn
-    dataRef.current = data
-  }, [isClockedIn, data])
+    dataRef.current = clockIn.data
+  }, [clockIn.data, isClockedIn])
 
   const toggleClockIn = async () => {
     if (!isClockedIn && userId) {
@@ -36,7 +37,7 @@ export default function ClockInButton() {
               const currentData = dataRef.current
 
               if (currentIsClockedIn) {
-                undo({
+                undoClockIn.mutate({
                   ...currentData,
                   deleted: true,
                   lastClockedTime,
@@ -49,7 +50,7 @@ export default function ClockInButton() {
         ),
       })
 
-      clockIn({
+      clockIn.mutate({
         start: new Date(),
         userId,
         ...(selectedTag && {tagId: selectedTag.id}),
@@ -57,7 +58,7 @@ export default function ClockInButton() {
     }
 
     if (isClockedIn && lastClockedTime) {
-      clockOut({end: new Date(), id: lastClockedTime.id})
+      clockOut.mutate({end: new Date(), id: lastClockedTime.id})
     }
   }
 
