@@ -4,9 +4,9 @@ import {useState} from 'react'
 import {Button} from '@/components/ui/button'
 import {Dialog, DialogTrigger} from '@/components/ui/dialog'
 
-const DynamicDialogContent = dynamic(() => import('./add-tag-dialog-content'))
+const DialogContent = dynamic(() => import('./add-tag-dialog-content'))
 
-export default function AddTagDialog({userId}: {userId?: string}) {
+export default function AddTagDialog() {
   const [open, setOpen] = useState(false)
 
   return (
@@ -14,7 +14,7 @@ export default function AddTagDialog({userId}: {userId?: string}) {
       <DialogTrigger asChild>
         <Button variant="outline">+ Create</Button>
       </DialogTrigger>
-      {open && <DynamicDialogContent userId={userId} setOpen={setOpen} />}
+      {open && <DialogContent setOpen={setOpen} />}
     </Dialog>
   )
 }

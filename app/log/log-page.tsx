@@ -9,11 +9,9 @@ import {columns} from '@/app/log/columns'
 import {mobileColumns} from '@/app/log/mobile-columns'
 import {Separator} from '@/components/ui/separator'
 
-const DynamicDataTable = dynamic(() => import('./data-table'))
-const DynamicClockedTimeForm = dynamic(
-  () => import('@/components/clocked-time-form'),
-)
-const DynamicMobileDataTable = dynamic(() => import('./mobile-data-table'))
+const DataTable = dynamic(() => import('./data-table'))
+const ClockedTimeForm = dynamic(() => import('@/components/clocked-time-form'))
+const MobileDataTable = dynamic(() => import('./mobile-data-table'))
 
 type User =
   | {
@@ -57,11 +55,11 @@ export default function LogPage({user}: {user: User}) {
               </p>
             </div>
             <Separator />
-            <DynamicClockedTimeForm tags={user.tags} userId={user.id} />
+            <ClockedTimeForm tags={user.tags} userId={user.id} />
           </div>
 
           <div className="col-span-3 lg:col-span-4">
-            <DynamicDataTable
+            <DataTable
               columns={columns as ColumnDef<unknown, unknown>[]}
               data={user.clockedTimes}
               tags={user.tags}
@@ -74,7 +72,7 @@ export default function LogPage({user}: {user: User}) {
 
   return (
     <div className="container mx-auto sm:space-y-4 px-2">
-      <DynamicMobileDataTable
+      <MobileDataTable
         columns={mobileColumns as ColumnDef<unknown, unknown>[]}
         data={user.clockedTimes}
       />

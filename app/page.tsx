@@ -9,6 +9,7 @@ export default async function Home() {
   const userId = session?.user?.id
   const queryClient = new QueryClient()
 
+  // Prefetch this data on the server to make it immediately available on the client
   await queryClient.prefetchQuery({
     queryKey: ['lastClockedTime', userId],
     queryFn: () => getLastClockedTime(userId),
