@@ -1,16 +1,14 @@
 'use client'
 
-// import dynamic from 'next/dynamic'
 import * as React from 'react'
 import {useEffect} from 'react'
 
 import SelectedTagProvider from '@/app/selected-tag-provider'
 import {useUserId} from '@/app/user-id-provider'
-import Clock from '@/components/clock'
+import ClockInButton from '@/components/clock-in-button'
 import Counter from '@/components/counter'
+import SignInDialog from '@/components/sign-in-dialog'
 import TagToolbar from '@/components/tag-toolbar'
-
-// const TagToolbar = dynamic(() => import('@/components/tag-toolbar'))
 
 export default function HomePage({userId}: {userId?: string}) {
   const {setUserId} = useUserId()
@@ -24,7 +22,7 @@ export default function HomePage({userId}: {userId?: string}) {
     <>
       <Counter />
       <SelectedTagProvider>
-        <Clock />
+        {userId ? <ClockInButton /> : <SignInDialog />}
         <TagToolbar />
       </SelectedTagProvider>
     </>
