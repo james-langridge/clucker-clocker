@@ -137,6 +137,43 @@ export default function ClockedTimeForm({
     }
   }
 
+  async function onDelete() {
+    const body = JSON.stringify({
+      ...time,
+      deleted: true,
+    })
+
+    try {
+      const res = await fetch('/api/clocked-times', {
+        method: 'PUT',
+        body,
+      })
+
+      if (!res.ok) {
+        toast({
+          title: 'Error deleting time...',
+          description: `Something went wrong: ${res.statusText}`,
+          variant: 'destructive',
+        })
+
+        return
+      }
+
+      toast({
+        description: 'Time deleted!',
+      })
+    } catch (error) {
+      toast({
+        title: 'Error deleting time...',
+        description: getErrorMessage(error),
+        variant: 'destructive',
+      })
+    }
+
+    await revalidate()
+    router.back()
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -296,27 +333,26 @@ export default function ClockedTimeForm({
         />
 
         <div className="space-x-2">
-          {time ? (
+          {time && (
             <Button
               variant="destructive"
               onClick={e => {
                 e.preventDefault()
-                router.back()
+                onDelete()
               }}
             >
-              Cancel
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              onClick={e => {
-                e.preventDefault()
-                form.reset()
-              }}
-            >
-              Reset
+              Delete
             </Button>
           )}
+          <Button
+            variant="secondary"
+            onClick={e => {
+              e.preventDefault()
+              router.back()
+            }}
+          >
+            Cancel
+          </Button>
           <Button type="submit">Submit</Button>
         </div>
       </form>
