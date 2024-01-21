@@ -125,8 +125,8 @@ export default function ClockedTimeForm({
           description: clockOutDescription(start, end),
         })
 
-        form.reset()
-        router.refresh()
+        await revalidate()
+        router.back()
       } catch (e) {
         toast({
           title: 'Error clocking time...',

@@ -3,6 +3,7 @@
 import {Tag} from '@prisma/client'
 import {Cross2Icon} from '@radix-ui/react-icons'
 import {Table} from '@tanstack/react-table'
+import {useRouter} from 'next/navigation'
 
 import {DataTableViewOptions} from '@/app/log/data-table-view-options'
 import {Button} from '@/components/ui/button'
@@ -18,6 +19,7 @@ export function DataTableToolbar<TData>({
   table,
   tags,
 }: DataTableToolbarProps<TData>) {
+  const router = useRouter()
   const isFiltered = table.getState().columnFilters.length > 0
 
   const options = tags.map(tag => {
@@ -29,6 +31,13 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="flex items-center justify-end">
+      <Button
+        variant="outline"
+        className="h-8 px-2 lg:px-3 mr-4"
+        onClick={() => router.push('/log/add')}
+      >
+        + Create
+      </Button>
       <div className="flex items-center space-x-2">
         {table.getColumn('tag') && (
           <DataTableFacetedFilter

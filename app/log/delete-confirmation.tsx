@@ -39,10 +39,12 @@ export default function DeleteConfirmation({id}: {id: string}) {
 
       if (!res.ok) {
         toast({
-          title: 'Error clocking time...',
+          title: 'Error deleting time...',
           description: `Something went wrong: ${res.statusText}`,
           variant: 'destructive',
         })
+
+        return
       }
 
       router.refresh()
