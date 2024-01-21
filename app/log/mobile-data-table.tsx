@@ -1,5 +1,6 @@
 'use client'
 
+import {Tag} from '@prisma/client'
 import {
   ColumnDef,
   flexRender,
@@ -11,8 +12,10 @@ import {
   ColumnFiltersState,
   getFilteredRowModel,
 } from '@tanstack/react-table'
+import {useRouter} from 'next/navigation'
 import * as React from 'react'
 
+import {DataTableToolbar} from '@/app/log/data-table-toolbar'
 import {MobileDataTablePagination} from '@/app/log/mobile-data-table-pagination'
 import {
   Table,
@@ -26,12 +29,15 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  tags: Tag[]
 }
 
 export default function MobileDataTable<TData, TValue>({
   columns,
   data,
+  tags,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter()
   const [sorting, setSorting] = React.useState<SortingState>([
     {
       id: 'day',
@@ -62,6 +68,7 @@ export default function MobileDataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
+      <DataTableToolbar table={table} tags={tags} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -88,6 +95,8 @@ export default function MobileDataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  // @ts-expect-errorTS2339: Property does not exist on type TData
+                  onClick={() => router.push(`/log/${row.original.id}`)}
                 >
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id} className="px-2">

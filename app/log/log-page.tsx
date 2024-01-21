@@ -58,6 +58,7 @@ export default function LogPage({user}: {user: User}) {
       <MobileDataTable
         columns={mobileColumns as ColumnDef<unknown, unknown>[]}
         data={user.clockedTimes}
+        tags={user.tags}
       />
     </div>
   )
