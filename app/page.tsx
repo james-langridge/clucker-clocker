@@ -12,12 +12,12 @@ export default async function Home() {
   // Prefetch this data on the server to make it immediately available on the client
   await queryClient.prefetchQuery({
     queryKey: ['lastClockedTime', userId],
-    queryFn: () => getLastClockedTime(userId),
+    queryFn: () => getLastClockedTime(),
   })
 
   await queryClient.prefetchQuery({
     queryKey: ['tags', userId],
-    queryFn: () => getTags(userId),
+    queryFn: () => getTags(),
   })
 
   return (

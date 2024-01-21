@@ -2,12 +2,8 @@ import {ClockedTime} from '.prisma/client'
 import {Tag} from '@prisma/client'
 
 // Returns the user's most recent clockedTime
-export async function getLastClockedTime(id?: string): Promise<ClockedTime> {
-  if (typeof id === 'undefined') {
-    return Promise.reject(new Error('Invalid id'))
-  }
-
-  const res = await fetch(`/api/user/${id}/last-clocked-time`)
+export async function getLastClockedTime(): Promise<ClockedTime> {
+  const res = await fetch(`/api/clocked-times`)
 
   const jsonRes = await res.json()
 
@@ -21,21 +17,14 @@ export async function getLastClockedTime(id?: string): Promise<ClockedTime> {
 export async function createClockedTime({
   start,
   end,
-  userId,
   tagId,
 }: {
   start: Date
   end?: Date
-  userId: string
   tagId?: string
 }) {
-  if (typeof userId === 'undefined') {
-    return Promise.reject(new Error('Invalid id'))
-  }
-
-  const body: {start: Date; end?: Date; userId: string; tagId?: string} = {
+  const body: {start: Date; end?: Date; tagId?: string} = {
     start,
-    userId,
   }
 
   if (end) {
@@ -115,16 +104,10 @@ export async function updateClockedTime({
   return jsonRes.data
 }
 
-export async function createTag({
-  name,
-  userId,
-}: {
-  name: string
-  userId: string
-}): Promise<Tag> {
+export async function createTag({name}: {name: string}): Promise<Tag> {
   const res = await fetch('/api/tags', {
     method: 'POST',
-    body: JSON.stringify({name, userId}),
+    body: JSON.stringify({name}),
   })
 
   const jsonRes = await res.json()
@@ -136,12 +119,8 @@ export async function createTag({
   return jsonRes.data
 }
 
-export async function getTags(id?: string): Promise<Tag[]> {
-  if (typeof id === 'undefined') {
-    return Promise.reject(new Error('Invalid id'))
-  }
-
-  const res = await fetch(`/api/user/${id}/tags`)
+export async function getTags(): Promise<Tag[]> {
+  const res = await fetch(`/api/tags`)
 
   const jsonRes = await res.json()
 

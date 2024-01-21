@@ -1,6 +1,5 @@
 import {Dispatch, SetStateAction, useState} from 'react'
 
-import {useUserId} from '@/app/user-id-provider'
 import {Button} from '@/components/ui/button'
 import {
   DialogContent,
@@ -17,15 +16,11 @@ export default function AddTagDialogContent({
 }: {
   setOpen: Dispatch<SetStateAction<boolean>>
 }) {
-  const {userId} = useUserId()
   const {createTagMutation} = useTag()
   const [tagName, setTagName] = useState('')
 
   async function onCreateTag() {
-    if (userId) {
-      createTagMutation({name: tagName, userId})
-    }
-
+    createTagMutation({name: tagName})
     setOpen(false)
   }
 

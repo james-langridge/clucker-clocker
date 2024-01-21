@@ -45,7 +45,7 @@ export function useTag() {
   // This is prefetched on the server in app/page.tsx
   const {data: tags} = useQuery({
     queryKey: ['tags', userId],
-    queryFn: () => getTags(userId),
+    queryFn: () => getTags(),
     refetchInterval: 60 * 1000,
   })
 

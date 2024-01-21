@@ -45,14 +45,9 @@ function isValidTime(value: string) {
 interface AddTimeFormProps {
   tags: Tag[]
   time?: ClockedTime
-  userId: string
 }
 
-export default function ClockedTimeForm({
-  tags,
-  time,
-  userId,
-}: AddTimeFormProps) {
+export default function ClockedTimeForm({tags, time}: AddTimeFormProps) {
   const [startPopoverOpen, setStartPopoverOpen] = useState(false)
   const [endPopoverOpen, setEndPopoverOpen] = useState(false)
   const router = useRouter()
@@ -118,7 +113,7 @@ export default function ClockedTimeForm({
       router.back()
     } else {
       try {
-        await createClockedTime({start, end, tagId, userId})
+        await createClockedTime({start, end, tagId})
 
         toast({
           title: 'Clocked out!',

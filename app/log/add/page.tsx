@@ -45,7 +45,7 @@ export default async function AddClockedTime() {
   return (
     <div className="flex flex-col items-center">
       <h1 className="prose text-3xl p-6">Clock a time</h1>
-      <ClockedTimeForm tags={user.tags} userId={user.id} />
+      <ClockedTimeForm tags={user.tags} />
     </div>
   )
 }

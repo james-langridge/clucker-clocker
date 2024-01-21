@@ -198,7 +198,7 @@ export function useLastClockedTime() {
 
   const {data: lastClockedTime} = useQuery({
     queryKey: ['lastClockedTime', userId],
-    queryFn: () => getLastClockedTime(userId),
+    queryFn: () => getLastClockedTime(),
     refetchInterval: 5 * 1000,
   })
 

@@ -47,7 +47,7 @@ export default async function EditTimePage({params}: {params: {id: string}}) {
   return (
     <div className="flex flex-col items-center">
       <h1 className="prose text-3xl p-6">Edit clocked time</h1>
-      <ClockedTimeForm tags={user.tags} userId={user.id} time={time} />
+      <ClockedTimeForm tags={user.tags} time={time} />
     </div>
   )
 }

@@ -3,23 +3,53 @@ import {NextRequest, NextResponse} from 'next/server'
 import {auth} from '@/auth'
 import {db} from '@/lib/db'
 
-export async function POST(req: NextRequest) {
+export async function GET() {
   try {
     const session = await auth()
 
-    if (!session) {
+    if (!session?.user) {
       return NextResponse.json(
         {message: 'You must be logged in.'},
         {status: 401},
       )
     }
 
-    const {name, userId} = await req.json()
+    const id = session.user.id
+
+    const tags = await db.tag.findMany({
+      where: {
+        userId: id,
+        deleted: false,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    })
+
+    return NextResponse.json({data: tags}, {status: 200})
+  } catch (e) {
+    console.error(e)
+    return NextResponse.json({error: 'Internal Server Error'}, {status: 500})
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await auth()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        {message: 'You must be logged in.'},
+        {status: 401},
+      )
+    }
+
+    const {name} = await req.json()
 
     const tag = await db.tag.create({
       data: {
         name,
-        userId,
+        userId: session.user.id,
       },
     })
 

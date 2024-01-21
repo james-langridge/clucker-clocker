@@ -3,7 +3,7 @@ import {NextRequest, NextResponse} from 'next/server'
 import {auth} from '@/auth'
 import {db} from '@/lib/db'
 
-export async function POST(req: NextRequest) {
+export async function GET() {
   try {
     const session = await auth()
 
@@ -14,22 +14,53 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    const id = session.user?.id
+
+    const clockedTime = await db.clockedTime.findFirst({
+      where: {
+        userId: id,
+        deleted: false,
+      },
+      include: {
+        tag: true,
+      },
+      orderBy: {
+        start: 'desc',
+      },
+    })
+
+    return NextResponse.json({data: clockedTime}, {status: 200})
+  } catch (e) {
+    console.error(e)
+    return NextResponse.json({error: 'Internal Server Error'}, {status: 500})
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await auth()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        {message: 'You must be logged in.'},
+        {status: 401},
+      )
+    }
+
     const {
       start,
       end,
-      userId,
       tagId,
     }: {
       start: Date
       end?: Date
-      userId: string
       tagId?: string
     } = await req.json()
 
     const clockedTime = await db.clockedTime.create({
       data: {
         start: new Date(start),
-        userId,
+        userId: session.user.id,
         ...(end !== undefined && {end: new Date(end)}),
         ...(tagId !== undefined && {tagId}),
       },
