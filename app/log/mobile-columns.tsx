@@ -3,11 +3,10 @@
 import {ClockedTime} from '.prisma/client'
 import {Tag} from '@prisma/client'
 import {ColumnDef} from '@tanstack/react-table'
-import {differenceInSeconds, format} from 'date-fns'
+import {format} from 'date-fns'
 
 import {DataTableColumnHeader} from '@/app/log/data-table-column-header'
 import {Badge} from '@/components/ui/badge'
-import {getDuration} from '@/lib/utils'
 
 export const mobileColumns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
   {
@@ -23,32 +22,26 @@ export const mobileColumns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
   },
   {
     accessorFn: row => row.start,
-    accessorKey: 'time',
+    accessorKey: 'start',
     header: ({column}) => {
-      return <DataTableColumnHeader column={column} title="Time" />
+      return <DataTableColumnHeader column={column} title="Start" />
     },
     cell: ({row}) => {
       return format(row.original.start, 'h:mm a')
     },
   },
   {
-    accessorKey: 'duration',
-    accessorFn: row => {
-      if (!row.end) {
-        return null
-      }
-
-      return differenceInSeconds(new Date(row.end), new Date(row.start))
-    },
+    accessorKey: 'end',
+    accessorFn: row => row.end,
     header: ({column}) => {
-      return <DataTableColumnHeader column={column} title="Duration" />
+      return <DataTableColumnHeader column={column} title="End" />
     },
     cell: ({row}) => {
       if (!row.original.end) {
         return null
       }
 
-      return getDuration(row.original.start, row.original.end)
+      return format(row.original.end, 'h:mm a')
     },
   },
   {
