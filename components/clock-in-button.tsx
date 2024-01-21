@@ -11,7 +11,7 @@ export default function ClockInButton() {
     <button onClick={() => toggleClockIn()}>
       <ClockIcon
         className={clsx(
-          isClockedIn ? 'animate-pulse text-blue-600' : 'text-green-600',
+          isClockedIn ? 'animate-spin-slow text-blue-600' : 'text-green-600',
           'h-72 w-72 ',
         )}
       />
