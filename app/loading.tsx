@@ -1,7 +1,6 @@
+import Image from 'next/image'
 import React from 'react'
 
-import Loader from '@/components/loader'
-
 export default function Loading() {
-  return <Loader />
+  return <Image src="/logo.png" alt="logo" width={473} height={611} />
 }
