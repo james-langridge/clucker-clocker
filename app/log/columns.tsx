@@ -5,9 +5,9 @@ import {Tag} from '@prisma/client'
 import {Pencil2Icon} from '@radix-ui/react-icons'
 import {ColumnDef} from '@tanstack/react-table'
 import {differenceInSeconds, format} from 'date-fns'
-import {ArrowUpDown} from 'lucide-react'
 import Link from 'next/link'
 
+import {DataTableColumnHeader} from '@/app/log/data-table-column-header'
 import DeleteConfirmation from '@/app/log/delete-confirmation'
 import {Badge} from '@/components/ui/badge'
 import {Button} from '@/components/ui/button'
@@ -44,33 +44,17 @@ export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
     accessorFn: row => row.start,
     accessorKey: 'startDay',
     header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Start Day
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableColumnHeader column={column} title="Start day" />
     },
     cell: ({row}) => {
-      return format(row.original.start, 'EEE, MMM d, yyyy')
+      return format(row.original.start, 'dd.MM.yy')
     },
   },
   {
     accessorFn: row => row.start,
     accessorKey: 'startTime',
     header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Start Time
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableColumnHeader column={column} title="Start time" />
     },
     cell: ({row}) => {
       return format(row.original.start, 'h:mm a')
@@ -80,19 +64,11 @@ export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
     accessorFn: row => row.end,
     accessorKey: 'endDay',
     header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          End Day
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableColumnHeader column={column} title="End day" />
     },
     cell: ({row}) => {
       if (row.original.end) {
-        return format(row.original.end, 'EEE, MMM d, yyyy')
+        return format(row.original.end, 'dd.MM.yy')
       }
 
       return null
@@ -102,15 +78,7 @@ export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
     accessorFn: row => row.end,
     accessorKey: 'endTime',
     header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          End Time
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableColumnHeader column={column} title="End time" />
     },
     cell: ({row}) => {
       if (row.original.end) {
@@ -129,15 +97,7 @@ export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
       return differenceInSeconds(new Date(row.end), new Date(row.start))
     },
     header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Duration
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableColumnHeader column={column} title="Duration" />
     },
     accessorKey: 'duration',
     cell: ({row}) => {
@@ -152,15 +112,7 @@ export const columns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
     accessorFn: row => row.tag?.name,
     accessorKey: 'tag',
     header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Tag
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableColumnHeader column={column} title="Tag" />
     },
     cell: ({row}) => {
       if (!row.original.tag) {

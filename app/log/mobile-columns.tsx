@@ -18,7 +18,7 @@ export const mobileColumns: ColumnDef<ClockedTime & {tag: Tag | null}>[] = [
       return <DataTableColumnHeader column={column} title="Day" />
     },
     cell: ({row}) => {
-      return format(row.original.start, 'MMM, d')
+      return format(row.original.start, 'dd.MM.yy')
     },
   },
   {

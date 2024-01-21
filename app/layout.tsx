@@ -24,7 +24,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <div className="flex flex-col justify-between w-full h-full min-h-screen">
           <Header />
-          <main className="flex flex-col items-center justify-evenly flex-auto w-full h-full px-4 py-4 mx-auto sm:px-6 md:py-6 relative">
+          <main className="flex flex-col items-center justify-evenly flex-auto w-full h-full px-3 py-4 mx-auto sm:px-6 md:py-6 relative">
             <Providers>{children}</Providers>
           </main>
           <Toaster />

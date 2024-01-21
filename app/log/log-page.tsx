@@ -30,7 +30,7 @@ type User =
   | undefined
 
 export default function LogPage({user}: {user: User}) {
-  const isLargeScreen = useMediaQuery('(min-width: 1536px)')
+  const isLargeScreen = useMediaQuery('(min-width: 1042px)')
   const isClient = useIsClient()
 
   if (!user) {
@@ -54,7 +54,7 @@ export default function LogPage({user}: {user: User}) {
   }
 
   return (
-    <div className="container mx-auto sm:space-y-4 px-2">
+    <div className="mx-auto sm:space-y-4">
       <MobileDataTable
         columns={mobileColumns as ColumnDef<unknown, unknown>[]}
         data={user.clockedTimes}
