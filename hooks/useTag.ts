@@ -46,7 +46,7 @@ export function useTag() {
   const {data: tags} = useQuery({
     queryKey: ['tags', userId],
     queryFn: () => getTags(userId),
-    // refetchInterval: 1000,
+    refetchInterval: 60 * 1000,
   })
 
   return {createTagMutation, tags}
