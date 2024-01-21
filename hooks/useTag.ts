@@ -1,13 +1,11 @@
 import {Tag} from '@prisma/client'
 import {useMutation, useQueryClient, useQuery} from '@tanstack/react-query'
 
-import {useUserId} from '@/app/user-id-provider'
 import {useToast} from '@/components/ui/use-toast'
 import {createTag, getTags} from '@/lib/api'
 import {getErrorMessage} from '@/lib/errors'
 
 export function useTag() {
-  const {userId} = useUserId()
   const {toast} = useToast()
   const queryClient = useQueryClient()
 
@@ -17,9 +15,9 @@ export function useTag() {
       toast({
         description: 'Tag created!',
       })
-      await queryClient.cancelQueries({queryKey: ['tags', userId]})
-      const previousTags = queryClient.getQueryData<Tag[]>(['tags', userId])
-      queryClient.setQueryData(['tags', userId], old => {
+      await queryClient.cancelQueries({queryKey: ['tags']})
+      const previousTags = queryClient.getQueryData<Tag[]>(['tags'])
+      queryClient.setQueryData(['tags'], old => {
         if (!Array.isArray(old)) {
           throw new Error('Expected an array of tags')
         }
@@ -35,16 +33,16 @@ export function useTag() {
         description: getErrorMessage(err),
         variant: 'destructive',
       })
-      queryClient.setQueryData(['tags', userId], context?.previousTags)
+      queryClient.setQueryData(['tags'], context?.previousTags)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({queryKey: ['tags', userId]})
+      queryClient.invalidateQueries({queryKey: ['tags']})
     },
   })
 
   // This is prefetched on the server in app/page.tsx
   const {data: tags} = useQuery({
-    queryKey: ['tags', userId],
+    queryKey: ['tags'],
     queryFn: () => getTags(),
     refetchInterval: 60 * 1000,
   })

@@ -6,17 +6,16 @@ import {getLastClockedTime, getTags} from '@/lib/api'
 
 export default async function Home() {
   const session = await auth()
-  const userId = session?.user?.id
   const queryClient = new QueryClient()
 
   // Prefetch this data on the server to make it immediately available on the client
   await queryClient.prefetchQuery({
-    queryKey: ['lastClockedTime', userId],
+    queryKey: ['lastClockedTime'],
     queryFn: () => getLastClockedTime(),
   })
 
   await queryClient.prefetchQuery({
-    queryKey: ['tags', userId],
+    queryKey: ['tags'],
     queryFn: () => getTags(),
   })
 

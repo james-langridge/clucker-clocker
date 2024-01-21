@@ -2,7 +2,6 @@ import {ClockedTime} from '.prisma/client'
 import {useMutation, useQueryClient, useQuery} from '@tanstack/react-query'
 import * as React from 'react'
 
-import {useUserId} from '@/app/user-id-provider'
 import {ToastAction} from '@/components/ui/toast'
 import {useToast} from '@/components/ui/use-toast'
 import {useTag} from '@/hooks/useTag'
@@ -16,7 +15,6 @@ import {clockOutDescription} from '@/lib/utils'
 
 export default function useClockedTime() {
   const {toast} = useToast()
-  const {userId} = useUserId()
   const queryClient = useQueryClient()
 
   const clockIn = useMutation({
@@ -25,23 +23,22 @@ export default function useClockedTime() {
     onMutate: async newClockedTime => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
+      await queryClient.cancelQueries({queryKey: ['lastClockedTime']})
 
       // Snapshot the previous value
       const previousLastClockedTime = queryClient.getQueryData([
         'lastClockedTime',
-        userId,
       ])
 
       // Optimistically update to the new value
-      queryClient.setQueryData(['lastClockedTime', userId], newClockedTime)
+      queryClient.setQueryData(['lastClockedTime'], newClockedTime)
 
       // Return a context object with the snapshotted value
       return {previousLastClockedTime}
     },
     // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
+      queryClient.invalidateQueries({queryKey: ['lastClockedTime']})
     },
     onSuccess: data => {
       // data: the created clocked time returned from createClockedTime
@@ -71,7 +68,7 @@ export default function useClockedTime() {
         variant: 'destructive',
       })
       queryClient.setQueryData(
-        ['lastClockedTime', userId],
+        ['lastClockedTime'],
         context?.previousLastClockedTime,
       )
     },
@@ -80,12 +77,11 @@ export default function useClockedTime() {
   const clockOut = useMutation({
     mutationFn: updateClockedTime,
     onMutate: async updatedClockedTime => {
-      await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
+      await queryClient.cancelQueries({queryKey: ['lastClockedTime']})
       const previousLastClockedTime = queryClient.getQueryData<ClockedTime>([
         'lastClockedTime',
-        userId,
       ])
-      queryClient.setQueryData(['lastClockedTime', userId], {
+      queryClient.setQueryData(['lastClockedTime'], {
         ...updatedClockedTime,
         tagId: previousLastClockedTime?.tagId,
       })
@@ -128,7 +124,7 @@ export default function useClockedTime() {
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
+      queryClient.invalidateQueries({queryKey: ['lastClockedTime']})
     },
     onError: (err, _, context) => {
       toast({
@@ -137,35 +133,35 @@ export default function useClockedTime() {
         variant: 'destructive',
       })
       queryClient.setQueryData(
-        ['lastClockedTime', userId],
+        ['lastClockedTime'],
         context?.previousLastClockedTime,
       )
     },
   })
 
+  // TODO works for undo clock in too?
   const undoClockOut = useMutation({
     mutationFn: updateClockedTime,
     // When mutate is called:
     onMutate: async updatedClockedTime => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
+      await queryClient.cancelQueries({queryKey: ['lastClockedTime']})
 
       // Snapshot the previous value
       const previousLastClockedTime = queryClient.getQueryData([
         'lastClockedTime',
-        userId,
       ])
 
       // Optimistically update to the new value
-      queryClient.setQueryData(['lastClockedTime', userId], updatedClockedTime)
+      queryClient.setQueryData(['lastClockedTime'], updatedClockedTime)
 
       // Return a context object with the snapshotted value
       return {previousLastClockedTime}
     },
     // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
+      queryClient.invalidateQueries({queryKey: ['lastClockedTime']})
     },
     onSuccess: () => {
       // data: the created clocked time returned from createClockedTime
@@ -184,7 +180,7 @@ export default function useClockedTime() {
         variant: 'destructive',
       })
       queryClient.setQueryData(
-        ['lastClockedTime', userId],
+        ['lastClockedTime'],
         context?.previousLastClockedTime,
       )
     },
@@ -194,10 +190,8 @@ export default function useClockedTime() {
 }
 
 export function useLastClockedTime() {
-  const {userId} = useUserId()
-
   const {data: lastClockedTime} = useQuery({
-    queryKey: ['lastClockedTime', userId],
+    queryKey: ['lastClockedTime'],
     queryFn: () => getLastClockedTime(),
     refetchInterval: 5 * 1000,
   })
@@ -206,7 +200,6 @@ export function useLastClockedTime() {
 }
 
 export function useTagClockedTime() {
-  const {userId} = useUserId()
   const {tags} = useTag()
   const {toast} = useToast()
   const queryClient = useQueryClient()
@@ -229,17 +222,16 @@ export function useTagClockedTime() {
         })
       }
 
-      await queryClient.cancelQueries({queryKey: ['lastClockedTime', userId]})
+      await queryClient.cancelQueries({queryKey: ['lastClockedTime']})
       const previousLastClockedTime = queryClient.getQueryData([
         'lastClockedTime',
-        userId,
       ])
-      queryClient.setQueryData(['lastClockedTime', userId], updatedClockedTime)
+      queryClient.setQueryData(['lastClockedTime'], updatedClockedTime)
 
       return {previousLastClockedTime}
     },
     onSettled: () => {
-      queryClient.invalidateQueries({queryKey: ['lastClockedTime', userId]})
+      queryClient.invalidateQueries({queryKey: ['lastClockedTime']})
     },
     onError: (err, _, context) => {
       toast({
@@ -248,7 +240,7 @@ export function useTagClockedTime() {
         variant: 'destructive',
       })
       queryClient.setQueryData(
-        ['lastClockedTime', userId],
+        ['lastClockedTime'],
         context?.previousLastClockedTime,
       )
     },
