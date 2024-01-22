@@ -61,7 +61,7 @@ export default function DeleteConfirmation({id}: {id: string}) {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="ghost" className="flex h-8 w-8 p-0">
-          <TrashIcon className="h-4 w-4" />
+          <TrashIcon className="h-6 w-6" />
           <span className="sr-only">Delete time</span>
         </Button>
       </AlertDialogTrigger>
