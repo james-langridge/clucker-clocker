@@ -4,16 +4,11 @@ import {useCount} from '@/hooks/useCount'
 
 export default function Counter() {
   const {hours, minutes, seconds, isClockedIn} = useCount()
+  const count = `${hours.toString().padStart(2, '0')}:${minutes
+    .toString()
+    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 
-  let count = `${seconds} s`
-
-  if (minutes) {
-    count = `${minutes} m ${seconds} s`
-  }
-
-  if (hours) {
-    count = `${hours} h ${minutes} m ${seconds} s`
-  }
-
-  return <div className="text-3xl h-9 tabular-nums">{isClockedIn && count}</div>
+  return (
+    <div className="text-2xl h-8 tabular-nums py-4">{isClockedIn && count}</div>
+  )
 }
