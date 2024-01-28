@@ -15,5 +15,5 @@ export default function Counter() {
     count = `${hours} h ${minutes} m ${seconds} s`
   }
 
-  return <div className="text-3xl h-9">{isClockedIn && count}</div>
+  return <div className="text-3xl h-9 tabular-nums">{isClockedIn && count}</div>
 }
