@@ -15,6 +15,9 @@ const getData = async (id?: string) => {
       clockedTimes: {
         where: {
           deleted: false,
+          end: {
+            not: null,
+          },
         },
         include: {
           tag: true,
