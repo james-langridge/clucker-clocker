@@ -8,7 +8,6 @@ Prisma, PostgreSQL, Tailwind CSS, shadcn/ui.
 ## To Do
 
 - Add tests
-- Configure CI
 - Add Bruno API collections
 - Import projects (tags) from Clockify
 - Sync tracked times to Clockify
