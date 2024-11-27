@@ -1,4 +1,4 @@
-name: Build and test
+name: CI
 
 on:
   push:
@@ -7,24 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout respository
-        uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'npm'
-      - run: npm ci
-        name: Install modules from npm
-      - run: npm test
-        name: Run the tests
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout respository
         uses: actions/checkout@v3
@@ -37,3 +21,33 @@ jobs:
         name: Install modules from npm
       - run: npm run build
         name: Build the application
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout respository
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - run: npm ci
+        name: Install modules from npm
+      - run: npm test
+        name: Run the tests
+
+  check-formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout respository
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - run: npm ci
+        name: Install modules from npm
+      - name: Check formatting with Prettier
+        run: npm run format:check
