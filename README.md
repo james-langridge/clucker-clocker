@@ -7,10 +7,16 @@ Prisma, PostgreSQL, Tailwind CSS, shadcn/ui.
 
 ## To Do
 
-- Add tests
-- Add Bruno API collections
-- Import projects (tags) from Clockify
-- Sync tracked times to Clockify
-  - Manually
-  - Cron job daily
-  - On save?
+- [ ] Add tests
+- [ ] Add Bruno API collections
+- [ ] Expand readme
+
+## Roadmap
+
+- [ ] Functionality for non-registered users
+- [ ] Offline functionality
+- [ ] Import project names from Clockify
+- [ ] Sync time entries to Clockify
+  - [ ] Manually?
+  - [ ] Cron job daily?
+  - [ ] On save?
