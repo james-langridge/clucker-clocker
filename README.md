@@ -11,8 +11,7 @@ Prisma, PostgreSQL, Tailwind CSS, shadcn/ui.
 
 ## To Do
 
-- [ ] Add tests
-- [ ] Add Bruno API collections
+- [ ] Add Bruno API collection
 
 ## Roadmap
 
