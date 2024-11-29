@@ -1,13 +1,34 @@
-import CustomLink from './custom-link'
+import Link from 'next/link'
 
-export default function Footer() {
+export function Footer() {
   return (
-    <footer className="flex flex-col w-full px-4 mx-0 my-4 space-y-1 text-sm md:max-w-3xl md:my-12 md:mx-auto sm:px-6 md:h-5 md:items-center md:space-y-0 md:space-x-4 md:flex-row">
-      {/*<CustomLink href="/help">Help</CustomLink>*/}
-      <CustomLink href="/policy">Policy</CustomLink>
-      <CustomLink href="https://github.com/james-langridge/clucker-clocker">
-        Source on GitHub
-      </CustomLink>
+    <footer className="border-t border-border/40 py-6 dark:border-border md:px-8 md:py-0">
+      <div className="container flex flex-col sm:items-center justify-between gap-4 md:h-24 md:flex-row">
+        <p className="text-balance sm:text-center text-sm leading-loose text-muted-foreground md:text-left">
+          Built by{' '}
+          <a
+            href="https://github.com/james-langridge"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium underline underline-offset-4"
+          >
+            james-langridge
+          </a>
+          . The source code is available on{' '}
+          <a
+            href="https://github.com/james-langridge/clucker-clocker"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium underline underline-offset-4"
+          >
+            GitHub
+          </a>
+          .
+        </p>
+        <p className="text-balance sm:text-center text-sm leading-loose text-muted-foreground md:text-left">
+          <Link href="/policy">Policy</Link>
+        </p>
+      </div>
     </footer>
   )
 }
