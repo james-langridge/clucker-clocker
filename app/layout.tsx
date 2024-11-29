@@ -3,7 +3,7 @@ import {Inter} from 'next/font/google'
 
 import Providers from '@/app/providers'
 import Footer from '@/components/footer'
-import Header from '@/components/header'
+import {Header} from '@/components/header'
 import {Toaster} from '@/components/ui/toaster'
 import './globals.css'
 
@@ -22,8 +22,8 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Header />
         <div className="flex flex-col justify-between sm:justify-evenly w-full h-full min-h-screen">
-          <Header />
           <main className="flex flex-col items-center justify-between flex-auto w-full h-full px-3 py-4 mx-auto sm:px-6 md:py-6 relative">
             <Providers>{children}</Providers>
           </main>
