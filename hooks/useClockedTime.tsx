@@ -1,5 +1,5 @@
 import {ClockedTime} from '.prisma/client'
-import {useMutation, useQueryClient, useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import * as React from 'react'
 
 import {ToastAction} from '@/components/ui/toast'
@@ -190,13 +190,11 @@ export default function useClockedTime() {
 }
 
 export function useLastClockedTime() {
-  const {data: lastClockedTime} = useQuery({
+  return useQuery({
     queryKey: ['lastClockedTime'],
     queryFn: () => getLastClockedTime(),
     refetchInterval: 5 * 1000,
   })
-
-  return {lastClockedTime}
 }
 
 export function useTagClockedTime() {

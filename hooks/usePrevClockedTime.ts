@@ -6,7 +6,7 @@ import {useEffect, useState} from 'react'
 import {useLastClockedTime} from '@/hooks/useClockedTime'
 
 export default function usePrevClockedTime() {
-  const {lastClockedTime} = useLastClockedTime()
+  const {data: lastClockedTime} = useLastClockedTime()
   const [prevTime, setPrevTime] = useState('')
   const [last2ClockedTimes, setLast2ClockedTimes] = useState<ClockedTime[]>([])
 

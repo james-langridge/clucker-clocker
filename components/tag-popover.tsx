@@ -16,7 +16,7 @@ export default function TagPopover() {
   const [open, setOpen] = React.useState(false)
   const {setSelectedTag, selectedTag} = useSelectedTag()
   const {tags} = useTag()
-  const {lastClockedTime} = useLastClockedTime()
+  const {data: lastClockedTime} = useLastClockedTime()
 
   // Selected tag defaults to last used
   useEffect(() => {
