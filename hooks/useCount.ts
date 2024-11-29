@@ -20,7 +20,7 @@ const initialCount: Count = {
 }
 
 export function useCount() {
-  const {lastClockedTime} = useLastClockedTime()
+  const {data: lastClockedTime} = useLastClockedTime()
   const isClockedIn = lastClockedTime && !lastClockedTime.end
   const [count, setCount] = useState<Count>(initialCount)
   const {hours, minutes, seconds} = count

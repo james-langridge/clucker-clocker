@@ -4,8 +4,12 @@ import useClockedTime, {useLastClockedTime} from '@/hooks/useClockedTime'
 export function useClockInButton() {
   const {selectedTag} = useSelectedTag()
   const {clockIn, clockOut} = useClockedTime()
-  const {lastClockedTime} = useLastClockedTime()
-  const isClockedIn = lastClockedTime && !lastClockedTime.end
+  const lastClockedTimeQuery = useLastClockedTime()
+  const isClockedIn = lastClockedTimeQuery.isSuccess
+    ? lastClockedTimeQuery.data
+      ? !lastClockedTimeQuery.data.end
+      : false
+    : false
 
   const toggleClockIn = async () => {
     if (!isClockedIn) {
@@ -15,9 +19,9 @@ export function useClockInButton() {
       })
     }
 
-    if (isClockedIn && lastClockedTime.id) {
+    if (isClockedIn && lastClockedTimeQuery.data?.id) {
       clockOut.mutate({
-        ...lastClockedTime,
+        ...lastClockedTimeQuery.data,
         end: new Date(),
       })
     }
