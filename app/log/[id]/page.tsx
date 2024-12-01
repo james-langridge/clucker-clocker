@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {auth} from '@/auth'
-import ClockedTimeForm from '@/components/clocked-time-form'
+import ClockedTimeForm from '@/feature/log/clocked-time-form'
 import {db} from '@/lib/db'
 
 const getData = async (id: string, userId?: string) => {

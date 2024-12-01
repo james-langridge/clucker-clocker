@@ -3,11 +3,11 @@
 import * as React from 'react'
 
 import SelectedTagProvider from '@/app/selected-tag-provider'
-import ClockInButton from '@/components/clock-in-button'
-import Counter from '@/components/counter'
-import PrevClockedTime from '@/components/prev-clocked-time'
-import SignInDialog from '@/components/sign-in-dialog'
-import TagToolbar from '@/components/tag-toolbar'
+import SignInDialog from '@/feature/auth/sign-in-dialog'
+import ClockInButton from '@/feature/clock/clock-in-button/clock-in-button'
+import Counter from '@/feature/clock/counter/counter'
+import PrevClockedTime from '@/feature/clock/prev-clocked-time'
+import TagToolbar from '@/feature/tags/tag-toolbar'
 
 export default function HomePage({userId}: {userId?: string}) {
   return (

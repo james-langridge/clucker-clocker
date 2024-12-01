@@ -1,5 +1,5 @@
 import {MainNav} from '@/components/main-nav'
-import UserButton from '@/components/user-button'
+import UserButton from '@/feature/auth/user-button'
 
 export function Header() {
   return (

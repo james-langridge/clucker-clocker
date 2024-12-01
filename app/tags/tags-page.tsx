@@ -5,9 +5,9 @@ import {ColumnDef} from '@tanstack/react-table'
 import dynamic from 'next/dynamic'
 import * as React from 'react'
 
-import {columns} from '@/app/tags/columns'
+import {columns} from '@/feature/tags/table/columns'
 
-const DataTable = dynamic(() => import('./data-table'))
+const DataTable = dynamic(() => import('../../feature/tags/table/data-table'))
 
 export default function TagsPage({tags}: {tags: Tag[]}) {
   return (

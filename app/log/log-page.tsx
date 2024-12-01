@@ -5,11 +5,13 @@ import dynamic from 'next/dynamic'
 import * as React from 'react'
 import {useIsClient, useMediaQuery} from 'usehooks-ts'
 
-import {columns} from '@/app/log/columns'
-import {mobileColumns} from '@/app/log/mobile-columns'
+import {columns} from '@/feature/log/table/columns'
+import {mobileColumns} from '@/feature/log/table/mobile-columns'
 
-const DataTable = dynamic(() => import('./data-table'))
-const MobileDataTable = dynamic(() => import('./mobile-data-table'))
+const DataTable = dynamic(() => import('../../feature/log/table/data-table'))
+const MobileDataTable = dynamic(
+  () => import('../../feature/log/table/mobile-data-table'),
+)
 
 type User =
   | {
