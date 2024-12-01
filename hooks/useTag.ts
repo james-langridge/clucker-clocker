@@ -1,7 +1,7 @@
 import {Tag} from '@prisma/client'
 import {useMutation, useQueryClient, useQuery} from '@tanstack/react-query'
 
-import {useToast} from '@/components/ui/use-toast'
+import {useToast} from '@/feature/toaster/use-toast'
 import {createTag, getTags} from '@/lib/api'
 import {getErrorMessage} from '@/lib/errors'
 

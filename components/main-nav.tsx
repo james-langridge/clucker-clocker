@@ -5,15 +5,15 @@ import React from 'react'
 
 import {cn} from '@/lib/utils'
 
+import {Button} from './button'
 import CustomLink from './custom-link'
-import {Button} from './ui/button'
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from './ui/navigation-menu'
+} from './navigation-menu'
 
 export function MainNav() {
   return (
