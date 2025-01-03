@@ -9,10 +9,6 @@ A minimal time tracker for when you have to track time but don't want all the
 bells and whistles. Built with Next.js 14 (App router), React Query, Auth.js,
 Prisma, PostgreSQL, Tailwind CSS, shadcn/ui.
 
-## To Do
-
-- [ ] Add Bruno API collection
-
 ## Roadmap
 
 - [ ] Functionality for non-registered users
